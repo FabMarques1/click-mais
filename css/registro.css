@@ -577,3 +577,7 @@ button:active {
     }
 
 }
+
+.form-group:has(#numero) {
+    grid-column: 1 / -1;
+}
