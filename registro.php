@@ -20,7 +20,7 @@ $result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CURRÍCULO+ | Registro</title>
     <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/registro.css?v=1">
+    <link rel="stylesheet" href="css/registro.css?v=2">
     <link
         rel="shortcut icon"
         href="assets/img/favicon.png"
@@ -217,6 +217,20 @@ $result = $stmt->get_result();
                 type="text"
                 placeholder="Apartamento, bloco, casa..."
                 maxlength="150"
+            >
+
+        </div>
+
+        <div class="form-group">
+            <label for="numero">
+                Número
+            </label>
+
+            <input
+                id="numero"
+                name="numero"
+                type="number"
+                placeholder="Número de sua residência..."
             >
 
         </div>

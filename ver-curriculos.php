@@ -8,82 +8,87 @@ if($_SESSION['tipo_usuario'] != 2) {
     header('Location: index.php');
 }
 
-$vagas = "SELECT id, titulo FROM tbl_vaga";
-$stmt1 = $conn->prepare($vagas);
-$stmt1->execute();
-$resultVaga = $stmt1->get_result();
-$stmt1->close();
+try{
+    $vagas = "SELECT id, titulo FROM tbl_vaga";
+    $stmt1 = $conn->prepare($vagas);
+    $stmt1->execute();
+    $resultVaga = $stmt1->get_result();
+    $stmt1->close();
 
-$filtroVaga  = $_GET['filtro_vaga'] ?? '';
-$filtroOrdem = (isset($_GET['filtro_ordem']) && strtoupper($_GET['filtro_ordem']) === 'ASC') ? 'ASC' : 'DESC';
+    $filtroVaga  = $_GET['vaga'] ?? '';
+    $filtroOrdem = (isset($_GET['ordem']) && strtoupper($_GET['ordem']) === 'ASC') ? 'ASC' : 'DESC';
 
-$porPagina = 10;
+    $porPagina = 10;
 
-$paginaAtual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+    $paginaAtual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
 
-if ($paginaAtual < 1) {
-    $paginaAtual = 1;
-}
+    if ($paginaAtual < 1) {
+        $paginaAtual = 1;
+    }
 
-$offset = ($paginaAtual - 1) * $porPagina;
+    $offset = ($paginaAtual - 1) * $porPagina;
 
-$sqlTotal = "SELECT COUNT(*) AS total
-            FROM tbl_curriculo c
-            INNER JOIN tbl_usuario u ON c.id_usuario = u.id
-            INNER JOIN tbl_vaga v ON c.id_vaga = v.id";
-
-if (!empty($filtroVaga)) {
-    $sqlTotal .= " WHERE v.id = ?";
-}
-
-$stmtTotal = $conn->prepare($sqlTotal);
-
-if (!empty($filtroVaga)) {
-    $stmtTotal->bind_param('i', $filtroVaga);
-}
-
-$stmtTotal->execute();
-
-$resultTotal = $stmtTotal->get_result();
-
-$totalRegistros = $resultTotal->fetch_assoc()['total'];
-
-$stmtTotal->close();
-
-$totalPaginas = ceil($totalRegistros / $porPagina);
-
-
-$informacoes = "SELECT
-                    u.id AS id_usuario,
-                    u.nome,
-                    u.sobrenome,
-                    u.email,
-                    v.id,
-                    v.titulo,
-                    c.curriculo
+    $sqlTotal = "SELECT COUNT(*) AS total
                 FROM tbl_curriculo c
-                INNER JOIN tbl_usuario u
-                    ON c.id_usuario = u.id
-                INNER JOIN tbl_vaga v 
-                    ON c.id_vaga = v.id";
+                INNER JOIN tbl_usuario u ON c.id_usuario = u.id
+                INNER JOIN tbl_vaga v ON c.id_vaga = v.id";
 
-if (!empty($filtroVaga)) {
-    $informacoes .= " WHERE v.id = ?";
+    if (!empty($filtroVaga)) {
+        $sqlTotal .= " WHERE v.id = ?";
+    }
+
+    $stmtTotal = $conn->prepare($sqlTotal);
+
+    if (!empty($filtroVaga)) {
+        $stmtTotal->bind_param('i', $filtroVaga);
+    }
+
+    $stmtTotal->execute();
+
+    $resultTotal = $stmtTotal->get_result();
+
+    $totalRegistros = $resultTotal->fetch_assoc()['total'];
+
+    $stmtTotal->close();
+
+    $totalPaginas = ceil($totalRegistros / $porPagina);
+
+
+    $informacoes = "SELECT
+                        u.id AS id_usuario,
+                        u.nome,
+                        u.sobrenome,
+                        u.email,
+                        v.id,
+                        v.titulo,
+                        c.curriculo
+                    FROM tbl_curriculo c
+                    INNER JOIN tbl_usuario u
+                        ON c.id_usuario = u.id
+                    INNER JOIN tbl_vaga v 
+                        ON c.id_vaga = v.id
+                    WHERE u.tipo_usuario != 3";
+
+    if (!empty($filtroVaga)) {
+        $informacoes .= " AND v.titulo = ?";
+    }
+
+    $informacoes .= " ORDER BY u.nome " . $filtroOrdem;
+    $informacoes .= " LIMIT ? OFFSET ?";
+
+    $stmt3 = $conn->prepare($informacoes);
+
+    if (!empty($filtroVaga)) {
+        $stmt3->bind_param('sii', $filtroVaga, $porPagina, $offset);
+    } else {
+        $stmt3->bind_param('ii', $porPagina, $offset);
+    }
+
+    $stmt3->execute();
+    $resultInfo = $stmt3->get_result();
+} catch (Exception $e) {
+    die("Erro com a visualização de candidatos, contate o suporte.");
 }
-
-$informacoes .= " ORDER BY u.nome " . $filtroOrdem;
-$informacoes .= " LIMIT ? OFFSET ?";
-
-$stmt3 = $conn->prepare($informacoes);
-
-if (!empty($filtroVaga)) {
-    $stmt3->bind_param('iii', $filtroVaga, $porPagina, $offset);
-} else {
-    $stmt3->bind_param('ii', $porPagina, $offset);
-}
-
-$stmt3->execute();
-$resultInfo = $stmt3->get_result();
 
 ?>
 
@@ -100,17 +105,17 @@ $resultInfo = $stmt3->get_result();
     <h1>Currículos</h1>
     <form action="ver-curriculos.php" method="GET">
 
-        <label for="filtro_ordem">Ordem por nome:</label>
-        <select name="filtro_ordem" id="filtro_ordem">
+        <label for="ordem">Ordem por nome:</label>
+        <select name="ordem" id="ordem">
             <option value="DESC" <?php echo $filtroOrdem === 'DESC' ? 'selected' : ''; ?>>Decrescente</option>
             <option value="ASC" <?php echo $filtroOrdem === 'ASC' ? 'selected' : ''; ?>>Crescente</option>
         </select>
 
-        <label for="filtro_vaga">Filtrar por vaga:</label>
-        <select name="filtro_vaga" id="filtro_vaga">
+        <label for="vaga">Filtrar por vaga:</label>
+        <select name="vaga" id="vaga">
             <option value="">Todas as vagas</option>
             <?php while ($rowVaga = $resultVaga->fetch_assoc()): ?>
-                <option value="<?php echo $rowVaga['id']; ?>" <?php echo ($filtroVaga == $rowVaga['id']) ? 'selected' : ''; ?>>
+                <option value="<?php echo $rowVaga['titulo']; ?>" <?php echo ($filtroVaga == $rowVaga['id']) ? 'selected' : ''; ?>>
                     <?php echo htmlspecialchars($rowVaga['titulo']); ?>
                 </option>
             <?php endwhile; ?>
@@ -124,7 +129,7 @@ $resultInfo = $stmt3->get_result();
                 <th>NOME</th>
                 <th>EMAIL</th>
                 <th>VAGA APLICADA</th>
-                <th>CURRÍCULO</th>
+                <th>PERFIL</th>
         </tr>
     <?php if ($resultInfo && $resultInfo->num_rows > 0): ?>
         <?php while ($rowInfo = $resultInfo->fetch_assoc()): ?>
@@ -132,8 +137,8 @@ $resultInfo = $stmt3->get_result();
                 <td data-label="Nome"><?php echo htmlspecialchars($rowInfo['nome']) . " " . htmlspecialchars($rowInfo['sobrenome']); ?></td>
                 <td data-label="Email"><?php echo htmlspecialchars($rowInfo['email']); ?></td>
                 <td data-label="Vaga"><?php echo htmlspecialchars($rowInfo['titulo']); ?></td>
-                <td data-label="Currículo"><a href="perfil-candidato.php?nome=<?php echo urlencode($rowInfo['nome'] . ' ' . $rowInfo['sobrenome']); ?>">
-    Acessar perfil
+                <td data-label="Currículo"><a href="perfil-candidato.php?email=<?php echo urlencode($rowInfo['email']); ?>&vaga=<?php echo urlencode($rowInfo['titulo']); ?>">
+    Mais informações
 </a></td>
             </tr>
         <?php endwhile; ?>

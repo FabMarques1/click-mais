@@ -89,9 +89,7 @@ BUSCAR CIDADES DO ESTADO
 =====================================================
 */
 
-estadoSelect.addEventListener("change", async function () {
-
-    const uf = this.value;
+async function carregarCidades(uf) {
 
     cidadeSelect.innerHTML =
         '<option value="">Carregando cidades...</option>';
@@ -155,6 +153,13 @@ estadoSelect.addEventListener("change", async function () {
             '<option value="">Erro ao carregar cidades</option>';
 
     }
+
+}
+
+
+estadoSelect.addEventListener("change", function () {
+
+    carregarCidades(this.value);
 
 });
 
@@ -224,40 +229,30 @@ cepInput.addEventListener("blur", async function () {
         Disparar carregamento das cidades
         */
 
-        estadoSelect.dispatchEvent(
-            new Event("change")
-        );
+        await carregarCidades(endereco.uf);
 
 
         /*
-        Aguardar cidades carregarem
+        Selecionar a cidade retornada pelo CEP
         */
 
-        setTimeout(() => {
+        const cidadeEncontrada =
+            Array.from(cidadeSelect.options).find(option =>
 
-            const cidadeOptions =
-                Array.from(cidadeSelect.options);
+                option.textContent
+                    .toLowerCase() ===
+                endereco.localidade
+                    .toLowerCase()
 
-
-            const cidadeEncontrada =
-                cidadeOptions.find(option =>
-
-                    option.textContent
-                        .toLowerCase() ===
-                    endereco.localidade
-                        .toLowerCase()
-
-                );
+            );
 
 
-            if (cidadeEncontrada) {
+        if (cidadeEncontrada) {
 
-                cidadeSelect.value =
-                    cidadeEncontrada.value;
+            cidadeSelect.value =
+                cidadeEncontrada.value;
 
-            }
-
-        }, 500);
+        }
 
 
     } catch (erro) {

@@ -12,51 +12,86 @@ if (!isset($_SESSION['tipo_usuario']) || $_SESSION['tipo_usuario'] != 2) {
     exit;
 }
 
-// Recebe o nome do candidato pela URL
-$nomeUsuario = filter_input(INPUT_GET, 'nome', FILTER_SANITIZE_SPECIAL_CHARS);
+// Recebe o email e vaga do candidato pela URL
+$email = filter_input(INPUT_GET, 'email', FILTER_SANITIZE_SPECIAL_CHARS);
+$vaga = filter_input(INPUT_GET, 'vaga', FILTER_SANITIZE_SPECIAL_CHARS);
 
 // Verifica se o nome foi informado
-if (!$nomeUsuario) {
+if (!$email) {
     header('Location: ver-curriculos.php');
     exit;
 }
 
-// Busca os dados do candidato
-$sql = "SELECT
-            u.id,
-            u.nome,
-            u.sobrenome,
-            u.email,
-            u.data_nascimento,
-            v.titulo,
-            c.curriculo
-        FROM tbl_usuario u
-        INNER JOIN tbl_curriculo c ON c.id_usuario = u.id
-        INNER JOIN tbl_vaga v ON c.id_vaga = v.id
-        WHERE CONCAT(u.nome, ' ', u.sobrenome) = ?";
+try{
+    // Busca os dados do candidato
+    $sql = "SELECT
+                u.id,
+                u.nome,
+                u.sobrenome,
+                u.email,
+                u.data_nascimento,
+                c.resumo_profissional,
+                v.titulo,
+                c.curriculo
+            FROM tbl_usuario u
+            INNER JOIN tbl_curriculo c ON c.id_usuario = u.id
+            INNER JOIN tbl_vaga v ON c.id_vaga = v.id
+            WHERE email = ? AND titulo = ?";
 
-$stmt = $conn->prepare($sql);
+    $stmt = $conn->prepare($sql);
 
-if (!$stmt) {
-    die("Erro ao preparar consulta.");
-}
+    if (!$stmt) {
+        die("Erro ao preparar consulta.");
+    }
 
-$stmt->bind_param('s', $nomeUsuario);
-$stmt->execute();
-$result = $stmt->get_result();
+    $stmt->bind_param('ss', $email, $vaga);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($result->num_rows === 0) {
+    if ($result->num_rows === 0) {
+        $stmt->close();
+        $conn->close();
+
+        header('Location: ver-curriculos.php');
+        exit;
+    }
+
+    $candidato = $result->fetch_assoc();
+
     $stmt->close();
-    $conn->close();
 
-    header('Location: ver-curriculos.php');
-    exit;
+    $sqlEndereco = "SELECT
+                        e.cep,
+                        e.logradouro,
+                        COALESCE(e.complemento, 'Sem complemento') AS complemento,
+                        e.bairro,
+                        e.numero,
+                        c.nome AS cidade,
+                        es.sigla AS estado
+                    FROM tbl_usuario_has_tbl_endereco ue
+                    INNER JOIN tbl_endereco e
+                        ON ue.id_endereco = e.id
+                    INNER JOIN tbl_cidade c
+                        ON e.id_cidade = c.id
+                    INNER JOIN tbl_estado es
+                        ON c.id_estado = es.id
+                    WHERE ue.id_usuario = ?";
+
+    $stmtEndereco = $conn->prepare($sqlEndereco);
+
+    if (!$stmtEndereco) {
+        die("Erro ao preparar consulta.");
+    }
+
+    $stmtEndereco->bind_param('i', $candidato['id']);
+    $stmtEndereco->execute();
+
+    $endereco = $stmtEndereco->get_result()->fetch_assoc();
+
+    $stmtEndereco->close();
+} catch (Exception $e) {
+    die("Erro ao ver candidato, contate o suporte.");
 }
-
-$candidato = $result->fetch_assoc();
-
-$stmt->close();
-$conn->close();
 
 ?>
 
@@ -128,10 +163,50 @@ $conn->close();
             </div>
 
             <div>
+                <strong>Endereço</strong>
+
+                <span>
+                    <?php if ($endereco): ?>
+
+                        <?php echo htmlspecialchars(
+                            $endereco['logradouro'] . ", " .
+                            $endereco['numero'] . ", " .
+                            $endereco['complemento'] . ", " .
+                            $endereco['bairro'] . ", " .
+                            $endereco['cidade'] . " - " .
+                            $endereco['estado'] . ", " .
+                            substr($endereco['cep'], 0, 5) . "-" .
+                            substr($endereco['cep'], 5)
+                        ); ?>
+
+                    <?php else: ?>
+
+                        Endereço não cadastrado.
+
+                    <?php endif; ?>
+                </span>
+            </div>
+
+            <div>
                 <strong>Vaga aplicada</strong>
                 <span>
                     <?php echo htmlspecialchars($candidato['titulo']); ?>
                 </span>
+            </div>
+
+            <div>
+                <strong>Resumo profissional</strong>
+
+                <span>
+                    <?php
+                        if(!empty($candidato['resumo_profissional'])) {
+                            echo htmlspecialchars($candidato['resumo_profissional']);
+                        } else {
+                            echo "<i>Sem resumo profissional</i>";
+                        }
+                    ?>
+                </span>
+
             </div>
 
         </section>
@@ -165,3 +240,5 @@ $conn->close();
 
 </body>
 </html>
+
+<?php $conn->close(); ?>

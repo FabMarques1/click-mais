@@ -8,6 +8,17 @@ $resumoProfissional = $_POST['resumoProfissional'];
 $curriculo = $_FILES['curriculo'];
 $idVaga = $_POST['vaga'];
 
+$query = "SELECT id_usuario, id_vaga FROM tbl_curriculo WHERE id_usuario = ? AND id_vaga = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("ii", $idUsuario, $idVaga);
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+if($result->num_rows > 0) {
+    die("Você já enviou currículo para essa vaga!");
+}
+
 try{
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($curriculo) && $curriculo['error'] === UPLOAD_ERR_OK) {
             
