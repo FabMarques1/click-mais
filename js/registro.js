@@ -258,8 +258,7 @@ cepInput.addEventListener("blur", async function () {
     } catch (erro) {
 
         console.error(
-            "Erro ao consultar CEP:",
-            erro
+            "Erro ao consultar CEP:"
         );
 
     }

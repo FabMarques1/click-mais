@@ -51,110 +51,106 @@ $resultVagas = $stmtVagas->get_result();
 
 <main class="curriculo-main">
     <section class="curriculo-section">
-        <?php if ($tipo !== 3): ?>
-            <div class="curriculo-container">
+        <div class="curriculo-container">
 
-                <div class="curriculo-info">
-                    <p class="tag">TRABALHE CONOSCO</p>
-                    <h1>Envie seu currículo <span>e faça parte do time</span></h1>
-                    <p>Preencha o formulário ao lado com seus dados e anexe seu currículo. Nossa equipe de recrutamento entrará em contato assim que houver uma vaga compatível com seu perfil.</p>
+            <div class="curriculo-info">
+                <p class="tag">TRABALHE CONOSCO</p>
+                <h1>Envie seu currículo <span>e faça parte do time</span></h1>
+                <p>Preencha o formulário ao lado com seus dados e anexe seu currículo. Nossa equipe de recrutamento entrará em contato assim que houver uma vaga compatível com seu perfil.</p>
 
-                    <div class="curriculo-benefits">
-                        <div>
-                            <strong>01</strong>
-                            <span>Cadastro rápido e simples</span>
-                        </div>
-                        <div>
-                            <strong>02</strong>
-                            <span>Análise por recrutadores especializados</span>
-                        </div>
-                        <div>
-                            <strong>03</strong>
-                            <span>Oportunidades em toda a região</span>
-                        </div>
+                <div class="curriculo-benefits">
+                    <div>
+                        <strong>01</strong>
+                        <span>Cadastro rápido e simples</span>
+                    </div>
+                    <div>
+                        <strong>02</strong>
+                        <span>Análise por recrutadores especializados</span>
+                    </div>
+                    <div>
+                        <strong>03</strong>
+                        <span>Oportunidades em toda a região</span>
                     </div>
                 </div>
-
-                <div class="form-card">
-                    <div class="form-header">
-                        <span>FORMULÁRIO</span>
-                        <h2>Seus dados</h2>
-                        <p>Confira se seus dados estão certos antes de enviar.</p>
-                    </div>
-
-                    <form action="enviar-curriculo.php" method="POST" enctype="multipart/form-data">
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="nome">Primeiro nome</label>
-                                <i><?php echo htmlspecialchars($nome); ?></i>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="sobrenome">Sobrenome</label>
-                                <i><?php echo htmlspecialchars($sobrenome); ?></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">E-mail</label>
-                            <i><?php echo htmlspecialchars($email); ?></i>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="endereco">Endereço</label>
-                            <i>
-                                <?php 
-                                    if(empty($complemento)) {
-                                        echo htmlspecialchars($logradouro . ", " . $numero . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
-                                    } else if (empty($numero)) {
-                                        echo htmlspecialchars($logradouro . ", " . $complemento . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
-                                    } else if (empty($numero) && empty($complemento)) {
-                                        echo htmlspecialchars($logradouro . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
-                                    } else {
-                                        echo htmlspecialchars($logradouro . ", " . $numero . ", " . $complemento . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
-                                    }
-                                ?>
-                            </i>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="resumoProfissional">Resumo profissional</label>
-                            <textarea name="resumoProfissional" id="resumoProfissional" placeholder="Conte-nos um pouco sobre sua experiência na área..." maxlength="200"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="vaga">Vagas</label>
-                            <select name="vaga" id="vaga">
-                                <?php while($row = $resultVagas->fetch_assoc()): ?>
-                                    <option value="<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['titulo']); ?></option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="curriculo">Currículo *</label>
-                            <div class="file-area" id="fileArea">
-                                <div class="file-icon">&#128196;</div>
-                                <div>
-                                    <strong id="fileText">Clique ou arraste seu arquivo aqui</strong>
-                                    <p id="fileSubtext">PDF até 2MB</p>
-                                </div>
-                                <input name="curriculo" id="curriculo" type="file" accept="application/pdf" required>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="submit-button">Enviar currículo</button>
-
-                        <p class="privacy-text">Seus dados serão utilizados apenas para fins de recrutamento e seleção, conforme nossa política de privacidade.</p>
-
-                    </form>
-                </div>
-
             </div>
-        <?php else: ?>
 
-        <?php endif; ?>
+            <div class="form-card">
+                <div class="form-header">
+                    <span>FORMULÁRIO</span>
+                    <h2>Seus dados</h2>
+                    <p>Confira se seus dados estão certos antes de enviar.</p>
+                </div>
+
+                <form action="enviar-curriculo.php" method="POST" enctype="multipart/form-data">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome">Primeiro nome</label>
+                            <i><?php echo htmlspecialchars($nome); ?></i>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sobrenome">Sobrenome</label>
+                            <i><?php echo htmlspecialchars($sobrenome); ?></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <i><?php echo htmlspecialchars($email); ?></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endereco">Endereço</label>
+                        <i>
+                            <?php 
+                                if(empty($complemento)) {
+                                    echo htmlspecialchars($logradouro . ", " . $numero . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
+                                } else if (empty($numero)) {
+                                    echo htmlspecialchars($logradouro . ", " . $complemento . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
+                                } else if (empty($numero) && empty($complemento)) {
+                                    echo htmlspecialchars($logradouro . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
+                                } else {
+                                    echo htmlspecialchars($logradouro . ", " . $numero . ", " . $complemento . ", " . $bairro . ", " . $cidade . " - " . $estado . ", " . substr($cep, 0, 5) . "-" . substr($cep, 5));
+                                }
+                            ?>
+                        </i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resumoProfissional">Resumo profissional</label>
+                        <textarea name="resumoProfissional" id="resumoProfissional" placeholder="Conte-nos um pouco sobre sua experiência na área..." maxlength="200"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vaga">Vagas</label>
+                        <select name="vaga" id="vaga">
+                            <?php while($row = $resultVagas->fetch_assoc()): ?>
+                                <option value="<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['titulo']); ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="curriculo">Currículo *</label>
+                        <div class="file-area" id="fileArea">
+                            <div class="file-icon">&#128196;</div>
+                            <div>
+                                <strong id="fileText">Clique ou arraste seu arquivo aqui</strong>
+                                <p id="fileSubtext">PDF até 2MB</p>
+                            </div>
+                            <input name="curriculo" id="curriculo" type="file" accept="application/pdf" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button">Enviar currículo</button>
+
+                    <p class="privacy-text">Seus dados serão utilizados apenas para fins de recrutamento e seleção, conforme nossa política de privacidade.</p>
+
+                </form>
+            </div>
+
+        </div>
     </section>
 </main>
 
