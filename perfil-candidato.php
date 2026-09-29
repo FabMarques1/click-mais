@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+require_once __DIR__ . '/includes/erros.php';
 
 require_once('config/database.php');
 
@@ -44,7 +45,7 @@ try{
     $stmt = $conn->prepare($sql);
 
     if (!$stmt) {
-        die("Erro ao preparar consulta.");
+        redirecionarComErro("Erro ao preparar consulta.", 'ver-curriculos.php');
     }
 
     $stmt->bind_param('ss', $email, $vaga);
@@ -83,7 +84,7 @@ try{
     $stmtEndereco = $conn->prepare($sqlEndereco);
 
     if (!$stmtEndereco) {
-        die("Erro ao preparar consulta.");
+        redirecionarComErro("Erro ao preparar consulta.", 'ver-curriculos.php');
     }
 
     $stmtEndereco->bind_param('i', $candidato['id']);
@@ -93,7 +94,7 @@ try{
 
     $stmtEndereco->close();
 } catch (Exception $e) {
-    die("Erro ao ver candidato, contate o suporte." . $e);
+    redirecionarComErro("Erro ao ver candidato, contate o suporte.", 'ver-curriculos.php');
 }
 
 ?>
@@ -155,7 +156,13 @@ try{
                 <strong>Telefone(s)</strong>
 
                 <span>
-                    <?php echo htmlspecialchars($candidato['telefone']); ?>
+                    <?php
+                        $telefones = array_map(function ($telefone) {
+                            return preg_replace('/^(\d{2})(\d{4,5})(\d{4})$/', '($1) $2-$3', trim($telefone));
+                        }, explode(',', $candidato['telefone'] ?? ''));
+
+                        echo htmlspecialchars(implode(', ', $telefones));
+                    ?>
                 </span>
 
             </div>

@@ -306,6 +306,7 @@ if(isset($_SESSION['login'])) {
         </div>
     </footer>
 
+<?php require __DIR__ . '/includes/notificacao.php'; ?>
 </body>
 
 </html>

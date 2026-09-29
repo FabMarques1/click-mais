@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once __DIR__ . '/includes/erros.php';
 
     require_once('config/database.php');
     header('Content-Type: text/html; charset=utf-8');
@@ -87,7 +88,7 @@ try{
     $stmt3->execute();
     $resultInfo = $stmt3->get_result();
 } catch (Exception $e) {
-    die("Erro com a visualização de candidatos, contate o suporte.");
+    redirecionarComErro("Erro com a visualização de candidatos, contate o suporte.", 'index.php');
 }
 
 ?>
@@ -193,6 +194,7 @@ try{
     </center>
 <?php endif; ?>
 
+<?php require __DIR__ . '/includes/notificacao.php'; ?>
 </body>
 </html>
 

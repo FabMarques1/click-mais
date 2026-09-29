@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/includes/erros.php';
 
 require_once("config/database.php");
 
@@ -16,7 +17,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if($result->num_rows > 0) {
-    die("Você já enviou currículo para essa vaga!");
+    redirecionarComErro("Você já enviou currículo para essa vaga!", 'form.php');
 }
 
 try{
@@ -40,16 +41,16 @@ try{
         ];
 
         if (!array_key_exists($extensao, $mimesPermitidos)) {
-            die("Tipo de arquivo inválido.");
+            redirecionarComErro("Tipo de arquivo inválido.", 'form.php');
         }
 
         $tipoMime = mime_content_type($caminhoTemp);
         if ($tipoMime !== $mimesPermitidos[$extensao]) {
-            die("Tipo de arquivo inválido.");
+            redirecionarComErro("Tipo de arquivo inválido.", 'form.php');
         }
 
         if ($tamanho > $tamanhoMax) {
-            die("Tamanho de arquivo excedido, permitido apenas 2MB.");
+            redirecionarComErro("Tamanho de arquivo excedido, permitido apenas 2MB.", 'form.php');
         }
 
         $hash16       = bin2hex(random_bytes(8));
@@ -66,17 +67,17 @@ try{
             if ($stmt->execute()) {
                 header("Location: index.php");
             } else {
-                die("Erro ao enviar currículo, contate o suporte.");
+                redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'form.php');
             }
 
             $stmt->close();
 
         } else {
-            die("Erro ao enviar currículo, contate o suporte.");
+            redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'form.php');
         }
 
     } else {
-        die("Erro ao enviar currículo, contate o suporte.");
+        redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'form.php');
     }
 } catch (Exception $e) {
     echo "Erro ao enviar currículo, contate o suporte.";

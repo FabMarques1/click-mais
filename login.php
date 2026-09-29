@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -58,6 +59,7 @@
 
     </main>
 
+<?php require __DIR__ . '/includes/notificacao.php'; ?>
 </body>
 
 </html>

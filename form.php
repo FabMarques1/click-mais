@@ -173,6 +173,7 @@ $resultVagas = $stmtVagas->get_result();
 <script src="js/vendor/mammoth.browser.min.js" defer></script>
 <script src="js/curriculo.js" defer></script>
 
+<?php require __DIR__ . '/includes/notificacao.php'; ?>
 </body>
 </html>
 

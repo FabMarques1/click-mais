@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/includes/erros.php';
 
 require_once("config/database.php");
 
@@ -72,16 +73,16 @@ try{
                 $_SESSION['estado'] = $rowEndereco['estado'];
 
             } else {
-                die("Usuário ou senha incorretos!");
+                redirecionarComErro("Usuário ou senha incorretos!", 'login.php');
             }
 
         } else {
-            die("Usuário ou senha incorretos!");
+            redirecionarComErro("Usuário ou senha incorretos!", 'login.php');
         }
 
     }
 } catch (Exception $e) {
-    echo "Erro no login, contate o suporte." . $e;
+    echo "Erro no login, contate o suporte.";
 }
 
 $conn->close();
