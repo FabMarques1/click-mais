@@ -2,22 +2,11 @@
 
 session_start();
 
-<<<<<<< HEAD
-if (isset($_SESSION['logado'])) {
-
-    $nome = $_SESSION['nome'] ?? '';
-    $sobrenome = $_SESSION['sobrenome'] ?? '';
-    $email = $_SESSION['email'] ?? '';
-    $cidade = $_SESSION['cidade'] ?? '';
-    $tipoUsuario = $_SESSION['tipo_usuario'] ?? 1;
-
-=======
 if(isset($_SESSION['login'])) {
     $nome = $_SESSION['nome'];
     $sobrenome = $_SESSION['sobrenome'];
     $email = $_SESSION['email'];
     $tipoUsuario = $_SESSION['tipo_usuario'];
->>>>>>> 1150bb61bde81940b3cc53a2d506f5e2c1478d5c
 }
 
 ?>
@@ -52,12 +41,9 @@ if(isset($_SESSION['login'])) {
             <h1>
                 CURRICULO<span>+</span>
             </h1>
-<<<<<<< HEAD
-=======
             <nav>
                 <?php if(isset($_SESSION['login']) && $_SESSION['login'] == True): ?>
                     <a href=""><?php echo $nome; ?></a>
->>>>>>> 1150bb61bde81940b3cc53a2d506f5e2c1478d5c
 
             <nav>
 
@@ -455,7 +441,6 @@ if(isset($_SESSION['login'])) {
 
     </footer>
 
-<<<<<<< HEAD
 
     <!-- MODAL DO PERFIL -->
 
@@ -599,9 +584,6 @@ if(isset($_SESSION['login'])) {
 
     });
 </script>
-=======
-<?php require __DIR__ . '/includes/notificacao.php'; ?>
->>>>>>> 1150bb61bde81940b3cc53a2d506f5e2c1478d5c
 </body>
 
 </html>

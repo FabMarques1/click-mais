@@ -10,13 +10,8 @@ $senha = $_POST['senha'];
 try{
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $query = "SELECT u.id, u.nome, u.sobrenome, u.email, u.senha, t.id AS tipo FROM tbl_usuario u INNER JOIN tbl_tipo_usuario t ON u.tipo_usuario = t.id WHERE u.email = ?";
-<<<<<<< HEAD
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $email);
-=======
         $stmtUser = $conn->prepare($query);
         $stmtUser->bind_param("s", $email);
->>>>>>> 1150bb61bde81940b3cc53a2d506f5e2c1478d5c
 
         $stmtUser->execute();
 
