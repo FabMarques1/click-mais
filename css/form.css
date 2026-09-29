@@ -338,6 +338,57 @@ a {
     transform: translateY(-2px);
 }
 
+.file-error {
+    color: #a51c30;
+    margin-top: 10px;
+}
+
+.file-error:empty {
+    display: none;
+}
+
+.curriculo-preview {
+    margin-top: 20px;
+    min-width: 0;
+}
+
+.curriculo-preview h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.curriculo-preview p {
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.curriculo-preview iframe,
+.curriculo-preview pre {
+    box-sizing: border-box;
+    width: 100%;
+    height: 420px;
+    border: 1px solid #777;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+}
+
+.curriculo-preview pre {
+    padding: 16px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font: 14px/1.6 Arial, sans-serif;
+}
+
+.curriculo-preview a {
+    color: #6138b0;
+}
+
+.file-area strong {
+    overflow-wrap: anywhere;
+}
+
 .privacy-text {
     color: #848b91;
 

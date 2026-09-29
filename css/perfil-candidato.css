@@ -1,0 +1,347 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+
+    background: #f4f6f9;
+    color: #0b0f14;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Ubuntu,
+        Cantarell,
+        "Helvetica Neue",
+        sans-serif;
+
+    padding: 40px 20px;
+}
+
+
+/* ========================================
+   CONTAINER PRINCIPAL
+======================================== */
+
+main {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    background: #ffffff;
+
+    border: 1px solid #d8dde3;
+    border-radius: 10px;
+
+    padding: 40px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ========================================
+   BOTÃO VOLTAR
+======================================== */
+
+main > a:first-child {
+    display: inline-flex;
+    align-items: center;
+
+    margin-bottom: 32px;
+
+    color: #4f5660;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: color 0.2s ease;
+}
+
+main > a:first-child:hover {
+    color: #513b81;
+}
+
+
+/* ========================================
+   CABEÇALHO
+======================================== */
+
+header {
+    padding-bottom: 28px;
+
+    border-bottom: 1px solid #e4e7eb;
+
+    margin-bottom: 28px;
+}
+
+header h1 {
+    color: #0b0f14;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #68717c;
+
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   SEÇÕES
+======================================== */
+
+section {
+    background: #ffffff;
+
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+
+    padding: 28px;
+
+    margin-bottom: 20px;
+}
+
+section:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ========================================
+   TÍTULOS DAS SEÇÕES
+======================================== */
+
+section h2 {
+    color: #0b0f14;
+
+    font-size: 18px;
+    font-weight: 650;
+
+    margin-bottom: 24px;
+}
+
+
+/* Nome do candidato */
+
+section:first-of-type h2 {
+    font-size: 24px;
+    font-weight: 700;
+
+    letter-spacing: -0.3px;
+
+    margin-bottom: 26px;
+}
+
+
+/* ========================================
+   INFORMAÇÕES DO CANDIDATO
+======================================== */
+
+section div {
+    margin-bottom: 20px;
+}
+
+section div:last-child {
+    margin-bottom: 0;
+}
+
+section strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #68717c;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+section span {
+    display: block;
+
+    color: #171b20;
+
+    font-size: 16px;
+    line-height: 1.5;
+
+    word-break: break-word;
+}
+
+
+/* ========================================
+   ÁREA DO CURRÍCULO
+======================================== */
+
+section p {
+    margin-bottom: 20px;
+
+    color: #68717c;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   BOTÃO VISUALIZAR CURRÍCULO
+======================================== */
+
+section a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+
+    padding: 10px 18px;
+
+    background: #513b81;
+    color: #ffffff;
+
+    border: 1px solid #513b81;
+    border-radius: 6px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+section a:hover {   
+    transform: translateY(-4px);
+}
+
+section a:active {
+    transform: translateY(0);
+}
+
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 24px 14px;
+    }
+
+    main {
+        padding: 28px 22px;
+    }
+
+    header h1 {
+        font-size: 26px;
+    }
+
+    section {
+        padding: 22px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    body {
+        padding: 12px;
+    }
+
+    main {
+        padding: 22px 16px;
+
+        border-radius: 8px;
+    }
+
+    main > a:first-child {
+        margin-bottom: 24px;
+    }
+
+    header {
+        padding-bottom: 22px;
+        margin-bottom: 22px;
+    }
+
+    header h1 {
+        font-size: 23px;
+    }
+
+    header p {
+        font-size: 14px;
+    }
+
+    section {
+        padding: 20px 17px;
+
+        border-radius: 7px;
+    }
+
+    section:first-of-type h2 {
+        font-size: 21px;
+    }
+
+    section h2 {
+        font-size: 17px;
+    }
+
+    section span {
+        font-size: 15px;
+    }
+
+    section a {
+        width: 100%;
+    }
+
+}
+
+
+/* ========================================
+   TELAS MUITO PEQUENAS
+======================================== */
+
+@media (max-width: 360px) {
+
+    body {
+        padding: 8px;
+    }
+
+    main {
+        padding: 20px 13px;
+    }
+
+    section {
+        padding: 17px 14px;
+    }
+
+    header h1 {
+        font-size: 21px;
+    }
+
+    section:first-of-type h2 {
+        font-size: 19px;
+    }
+
+}

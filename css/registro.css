@@ -9,7 +9,7 @@
 body {
     min-height: 100vh;
     margin: 0;
-    padding: 40px 20px;
+    padding: 50px 20px;
 
     display: flex;
     justify-content: center;
@@ -37,14 +37,15 @@ body {
 
 form {
     width: 100%;
-    max-width: 520px;
+    max-width: 900px;
 
-    padding: 36px;
+    padding: 38px;
 
     background-color: #121820;
 
     border: 1px solid #202832;
     border-top: 3px solid #8c63e6;
+
     border-radius: 6px;
 
     box-shadow:
@@ -69,6 +70,7 @@ form::before {
 
     font-size: 28px;
     font-weight: 700;
+
     letter-spacing: -0.8px;
     line-height: 1.2;
 }
@@ -111,11 +113,61 @@ form::after {
 
 
 /* ========================================
+   GRID PRINCIPAL DO FORMULÁRIO
+======================================== */
+
+/*
+   Todos os .form-group ficam organizados
+   em duas colunas no desktop.
+*/
+
+form {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 20px;
+    row-gap: 0;
+}
+
+
+/*
+   Título e subtítulo ocupam
+   toda a largura.
+*/
+
+form::before,
+form::after {
+    grid-column: 1 / -1;
+}
+
+
+/*
+   Nome + sobrenome já são uma
+   linha própria.
+*/
+
+.form-row {
+    grid-column: 1 / -1;
+}
+
+
+/*
+   CEP, estado e cidade.
+*/
+
+#cep {
+    grid-column: auto;
+}
+
+
+/* ========================================
    GRUPO DO FORMULÁRIO
 ======================================== */
 
 .form-group {
     display: flex;
+
     flex-direction: column;
 
     width: 100%;
@@ -135,6 +187,7 @@ label {
 
     font-size: 13px;
     font-weight: 600;
+
     letter-spacing: 0.2px;
 }
 
@@ -151,6 +204,7 @@ select {
     padding: 0 13px;
 
     border: 1px solid #2b343d;
+
     border-radius: 4px;
 
     outline: none;
@@ -188,12 +242,16 @@ select {
     appearance: none;
 
     background-image:
-        linear-gradient(45deg,
+        linear-gradient(
+            45deg,
             transparent 50%,
-            #9563e6 50%),
-        linear-gradient(135deg,
+            #9563e6 50%
+        ),
+        linear-gradient(
+            135deg,
             #9563e6 50%,
-            transparent 50%);
+            transparent 50%
+        );
 
     background-position:
         calc(100% - 17px) 19px,
@@ -250,10 +308,55 @@ input:invalid:not(:placeholder-shown) {
 
 
 /* ========================================
+   DATA DE NASCIMENTO
+======================================== */
+
+/*
+   Ocupa uma coluna normalmente.
+*/
+
+#data_nascimento {
+    cursor: pointer;
+}
+
+
+/* ========================================
+   CEP / ESTADO / CIDADE
+======================================== */
+
+/*
+   Faz os campos de localização
+   ficarem visualmente relacionados.
+*/
+
+.form-group:has(#cep),
+.form-group:has(#estado),
+.form-group:has(#cidade) {
+    min-width: 0;
+}
+
+
+/* ========================================
+   LOGRADOURO
+======================================== */
+
+/*
+   O logradouro ocupa uma linha inteira,
+   pois normalmente possui texto maior.
+*/
+
+.form-group:has(#logradouro) {
+    grid-column: 1 / -1;
+}
+
+
+/* ========================================
    BOTÃO
 ======================================== */
 
 button {
+    grid-column: 1 / -1;
+
     width: 100%;
     height: 46px;
 
@@ -267,6 +370,7 @@ button {
     color: #0b0710;
 
     font-family: inherit;
+
     font-size: 14px;
     font-weight: 700;
 
@@ -308,16 +412,21 @@ button:active {
    TABLET
 ======================================== */
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
 
     body {
-        padding: 30px 18px;
+        padding: 35px 18px;
+        align-items: flex-start;
     }
 
     form {
-        max-width: 500px;
+        max-width: 700px;
+
         padding: 32px;
+
+        column-gap: 16px;
     }
+
 }
 
 
@@ -328,33 +437,85 @@ button:active {
 @media (max-width: 600px) {
 
     body {
-        align-items: flex-start;
         padding: 25px 15px;
+
+        align-items: flex-start;
     }
+
 
     form {
         max-width: 100%;
+
         padding: 28px 24px;
+
         border-radius: 5px;
+
+        /*
+           Uma coluna no celular.
+        */
+
+        grid-template-columns: 1fr;
+
+        column-gap: 0;
     }
+
+
+    form::before,
+    form::after {
+        grid-column: 1;
+    }
+
 
     form::before {
         font-size: 25px;
     }
 
+
     form::after {
         margin-bottom: 25px;
+
         font-size: 13px;
     }
 
+
+    /*
+       Nome e sobrenome também
+       passam para uma coluna.
+    */
+
     .form-row {
+        grid-column: 1;
+
         flex-direction: column;
+
         gap: 0;
     }
+
+
+    /*
+       Logradouro deixa de ocupar
+       duas colunas porque existe
+       apenas uma.
+    */
+
+    .form-group:has(#logradouro) {
+        grid-column: 1;
+    }
+
+
+    /*
+       Botão.
+    */
+
+    button {
+        grid-column: 1;
+    }
+
 
     .form-group {
         margin-bottom: 17px;
     }
+
 }
 
 
@@ -368,13 +529,16 @@ button:active {
         padding: 18px 12px;
     }
 
+
     form {
         padding: 24px 18px;
     }
 
+
     form::before {
         font-size: 23px;
     }
+
 
     input,
     select,
@@ -382,9 +546,11 @@ button:active {
         height: 44px;
     }
 
+
     label {
         font-size: 12px;
     }
+
 }
 
 
@@ -395,12 +561,27 @@ button:active {
 @keyframes formAppear {
 
     from {
+
         opacity: 0;
+
         transform: translateY(12px);
+
     }
 
     to {
+
         opacity: 1;
+
         transform: translateY(0);
+
     }
+
+}
+
+.form-group:has(#numero) {
+    grid-column: 1 / -1;
+}
+
+.form-group:has(#telefone) {
+    grid-column: 1 / -1;
 }

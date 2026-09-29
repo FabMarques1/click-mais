@@ -10,7 +10,7 @@ try{
     $conn->set_charset("utf8mb4");
     # Conexão bem-sucedida!
 } catch (Exception $e) {
-    die("Erro na conexão com o banco de dados, contate o suporte.");
+    die("Erro na conexão com o banco de dados, contate o suporte." . $e);
 }
 
 ?>
