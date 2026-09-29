@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bairro          = trim($_POST['bairro'] ?? '');
     $complemento     = trim($_POST['complemento'] ?? '');
     $complemento     = $complemento === '' ? null : $complemento;
+    $telefone        = preg_replace('/\D/', '', $_POST['telefone'] ?? '');
 
     $nascimento = DateTime::createFromFormat('Y-m-d', $data_nascimento);
 
@@ -35,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = "Data de nascimento inválida.";
     } elseif (mb_strlen($logradouro) > 50 || mb_strlen($bairro) > 35) {
         $erro = "Logradouro ou bairro excede o tamanho permitido.";
+    } elseif (isset($telefone) && strlen($telefone) < 10) {
+        $erro = "Telefone inválido.";
     }
 
 
@@ -81,7 +84,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id_usuario = $conn->insert_id;
                 $stmt->close();
 
-                // 2. Endereço
+                // 2. Telefone
+                if (isset($telefone)) {
+                    $stmt = $conn->prepare("INSERT INTO tbl_telefone (telefone, id_usuario)
+                                            VALUES (?, ?)");
+                    $stmt->bind_param("si", $telefone, $id_usuario);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+
+                // 3. Endereço
                 $stmt = $conn->prepare("INSERT INTO tbl_endereco (cep, logradouro, complemento, bairro, numero, id_cidade)
                                         VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param("sssssi", $cep, $logradouro, $complemento, $bairro, $numero, $cidade);
@@ -89,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id_endereco = $conn->insert_id;
                 $stmt->close();
 
-                // 3. Relação usuário <-> endereço
+                // 4. Relação usuário <-> endereço
                 $stmt = $conn->prepare("INSERT INTO tbl_usuario_has_tbl_endereco (id_usuario, id_endereco)
                                         VALUES (?, ?)");
                 $stmt->bind_param("ii", $id_usuario, $id_endereco);

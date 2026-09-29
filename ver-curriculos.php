@@ -102,7 +102,7 @@ try{
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">    
 </head>
 <body>
-    <h1>Currículos</h1>
+    <h1>CURRÍCULOS</h1>
     <form action="ver-curriculos.php" method="GET">
 
         <label for="ordem">Ordem por nome:</label>

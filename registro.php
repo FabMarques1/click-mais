@@ -20,7 +20,7 @@ $result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CURRÍCULO+ | Registro</title>
     <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/registro.css?v=2">
+    <link rel="stylesheet" href="css/registro.css?v=3">
     <link
         rel="shortcut icon"
         href="assets/img/favicon.png"
@@ -99,6 +99,20 @@ $result = $stmt->get_result();
                 type="email"
                 placeholder="Seu e-mail..."
                 required
+            >
+
+        </div>
+        <div class="form-group">
+            <label for="telefone">
+                Telefone
+            </label>
+
+            <input
+                id="telefone"
+                name="telefone"
+                type="text"
+                placeholder="(12) 00000-0000"
+                maxlength="15"
             >
 
         </div>
@@ -242,7 +256,7 @@ $result = $stmt->get_result();
     </form>
 
 
-    <script src="js/registro.js"></script>
+    <script src="js/registro.js?v=1"></script>
 
 </body>
 

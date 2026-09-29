@@ -32,11 +32,14 @@ try{
                 u.data_nascimento,
                 c.resumo_profissional,
                 v.titulo,
-                c.curriculo
+                c.curriculo,
+                GROUP_CONCAT(t.telefone) AS telefone
             FROM tbl_usuario u
+            LEFT JOIN tbl_telefone t ON t.id_usuario = u.id
             INNER JOIN tbl_curriculo c ON c.id_usuario = u.id
             INNER JOIN tbl_vaga v ON c.id_vaga = v.id
-            WHERE email = ? AND titulo = ?";
+            WHERE u.email = ? AND v.titulo = ?
+            GROUP BY u.id, u.nome, u.sobrenome, u.email, u.data_nascimento, c.resumo_profissional, v.titulo, c.curriculo";
 
     $stmt = $conn->prepare($sql);
 
@@ -90,7 +93,7 @@ try{
 
     $stmtEndereco->close();
 } catch (Exception $e) {
-    die("Erro ao ver candidato, contate o suporte.");
+    die("Erro ao ver candidato, contate o suporte." . $e);
 }
 
 ?>
@@ -144,6 +147,15 @@ try{
 
                 <span>
                     <?php echo htmlspecialchars($candidato['email']); ?>
+                </span>
+
+            </div>
+            <div>
+
+                <strong>Telefone(s)</strong>
+
+                <span>
+                    <?php echo htmlspecialchars($candidato['telefone']); ?>
                 </span>
 
             </div>

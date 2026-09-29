@@ -14,6 +14,9 @@ const bairroInput =
 const dataNascimento =
     document.getElementById("data_nascimento");
 
+const telefone =
+    document.getElementById("telefone");
+
 const erroData =
     document.getElementById("erroData");
 
@@ -289,6 +292,34 @@ cepInput.addEventListener("input", function () {
 
 
     this.value = cep;
+
+});
+
+
+/*
+=====================================================
+MÁSCARA DE TELEFONE
+=====================================================
+*/
+
+telefone.addEventListener("input", function () {
+    let telefone =
+        this.value.replace(/\D/g, "");
+
+
+    if (telefone.length > 5) {
+
+        telefone =
+            "(" +
+            telefone.substring(0, 2) +
+            ") " +
+            telefone.substring(2, 7) +
+            "-" +
+            telefone.substring(7, 11);
+    }
+
+
+    this.value = telefone;
 
 });
 

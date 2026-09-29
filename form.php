@@ -137,10 +137,18 @@ $resultVagas = $stmtVagas->get_result();
                             <div class="file-icon">&#128196;</div>
                             <div>
                                 <strong id="fileText">Clique ou arraste seu arquivo aqui</strong>
-                                <p id="fileSubtext">PDF até 2MB</p>
+                                <p id="fileSubtext">Prévia: PDF, DOC ou DOCX até 2MB. Envio: PDF.</p>
                             </div>
-                            <input name="curriculo" id="curriculo" type="file" accept="application/pdf" required>
+                            <input name="curriculo" id="curriculo" type="file" accept=".pdf,.doc,.docx" aria-describedby="fileSubtext fileError" required>
                         </div>
+                        <p id="fileError" class="file-error" role="alert"></p>
+                        <section id="previewContainer" class="curriculo-preview" aria-labelledby="previewTitle" hidden>
+                            <h3 id="previewTitle">Prévia do currículo</h3>
+                            <p id="previewStatus" role="status"></p>
+                            <iframe id="pdfPreview" title="Prévia do currículo em PDF" hidden></iframe>
+                            <pre id="textPreview" tabindex="0" aria-label="Texto do currículo" hidden></pre>
+                            <a id="previewLink" target="_blank" rel="noopener" hidden>Abrir PDF em outra aba</a>
+                        </section>
                     </div>
 
                     <button type="submit" class="submit-button">Enviar currículo</button>
@@ -161,47 +169,9 @@ $resultVagas = $stmtVagas->get_result();
     </div>
 </footer>
 
-<script>
-    const inputCurriculo = document.getElementById('curriculo');
-    const fileText = document.getElementById('fileText');
-    const fileSubtext = document.getElementById('fileSubtext');
-    const previewContainer = document.getElementById('previewContainer');
-    const pdfPreview = document.getElementById('pdfPreview');
-
-    inputCurriculo.addEventListener('change', function () {
-        const arquivo = this.files[0];
-
-        if (!arquivo) {
-            return;
-        }
-
-        // Valida se é PDF
-        if (arquivo.type !== 'application/pdf') {
-            alert('Por favor, envie apenas arquivos PDF.');
-            this.value = '';
-            previewContainer.style.display = 'none';
-            return;
-        }
-
-        // Valida tamanho (2MB = 2 * 1024 * 1024 bytes)
-        const tamanhoMaximo = 2 * 1024 * 1024;
-        if (arquivo.size > tamanhoMaximo) {
-            alert('O arquivo excede o limite de 2MB.');
-            this.value = '';
-            previewContainer.style.display = 'none';
-            return;
-        }
-
-        // Atualiza o texto com o nome e tamanho do arquivo
-        fileText.textContent = arquivo.name;
-        fileSubtext.textContent = (arquivo.size / 1024 / 1024).toFixed(2) + ' MB';
-
-        // Cria uma URL temporária local e mostra no iframe
-        const urlArquivo = URL.createObjectURL(arquivo);
-        pdfPreview.src = urlArquivo;
-        previewContainer.style.display = 'block';
-    });
-</script>
+<script src="js/vendor/docToText.js" defer></script>
+<script src="js/vendor/mammoth.browser.min.js" defer></script>
+<script src="js/curriculo.js" defer></script>
 
 </body>
 </html>
