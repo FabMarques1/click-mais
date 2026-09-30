@@ -9,7 +9,7 @@ $senha = $_POST['senha'];
 
 try{
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $query = "SELECT u.id, u.nome, u.sobrenome, u.email, u.senha, t.id AS tipo FROM tbl_usuario u INNER JOIN tbl_tipo_usuario t ON u.tipo_usuario = t.id WHERE u.email = ?";
+        $query = "SELECT u.id, u.nome, u.sobrenome, u.email, u.senha, u.icone, t.id AS tipo FROM tbl_usuario u INNER JOIN tbl_tipo_usuario t ON u.tipo_usuario = t.id WHERE u.email = ?";
         $stmtUser = $conn->prepare($query);
         $stmtUser->bind_param("s", $email);
 
@@ -62,6 +62,7 @@ try{
                 $_SESSION['sobrenome'] = $rowUser['sobrenome'];
                 $_SESSION['email'] = $rowUser['email'];
                 $_SESSION['tipo_usuario'] = $rowUser['tipo'];
+                $_SESSION['icone'] = $rowUser['icone'];
 
                 // Endereço
                 $_SESSION['cep'] = $rowEndereco['cep'];

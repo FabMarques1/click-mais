@@ -30,7 +30,7 @@
     function reset() {
         clearPreview();
         fileText.textContent = "Clique ou arraste seu arquivo aqui";
-        fileSubtext.textContent = "Prévia: PDF, DOC ou DOCX até 2MB. Envio: PDF.";
+        fileSubtext.textContent = "PDF, DOC ou DOCX até 2MB.";
         fileError.textContent = "";
         input.setCustomValidity("");
         input.removeAttribute("aria-invalid");
@@ -39,6 +39,7 @@
     function reject(message) {
         reset();
         input.value = "";
+        input.setCustomValidity(message);
         input.setAttribute("aria-invalid", "true");
         fileError.textContent = message;
     }
@@ -59,11 +60,6 @@
 
         fileText.textContent = file.name;
         fileSubtext.textContent = (file.size / 1024 / 1024).toFixed(2) + " MB";
-        if (extension !== "pdf") {
-            const message = "O envio aceita apenas PDF. Salve o currículo em PDF e selecione o arquivo.";
-            input.setCustomValidity(message);
-            fileSubtext.textContent += " — Para enviar, selecione a versão em PDF.";
-        }
         container.hidden = false;
         status.textContent = "Preparando prévia…";
         const currentSelection = selection;

@@ -2,11 +2,22 @@
 
 session_start();
 
-if(isset($_SESSION['login'])) {
-    $nome = $_SESSION['nome'];
-    $sobrenome = $_SESSION['sobrenome'];
-    $email = $_SESSION['email'];
-    $tipoUsuario = $_SESSION['tipo_usuario'];
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+
+    $nome = $_SESSION['nome'] ?? '';
+    $sobrenome = $_SESSION['sobrenome'] ?? '';
+    $email = $_SESSION['email'] ?? '';
+    $tipoUsuario = $_SESSION['tipo_usuario'] ?? 0;
+    $icone = $_SESSION['icone'] ?? 'assets/avatar/default_avt_icon.jpg';
+
+    $logradouro = $_SESSION['logradouro'];
+    $numero = $_SESSION['numero'];
+    $complemento = $_SESSION['complemento'];
+    $bairro = $_SESSION['bairro'];
+    $cidade = $_SESSION['cidade'];
+    $estado = $_SESSION['estado'];
+    $cep = $_SESSION['cep'];
+
 }
 
 ?>
@@ -41,19 +52,16 @@ if(isset($_SESSION['login'])) {
             <h1>
                 CURRICULO<span>+</span>
             </h1>
-            <nav>
-                <?php if(isset($_SESSION['login']) && $_SESSION['login'] == True): ?>
-                    <a href=""><?php echo $nome; ?></a>
 
             <nav>
 
-                <?php if (isset($_SESSION['logado']) && $_SESSION['logado'] == true): ?>
+                <?php if (isset($_SESSION['login']) && $_SESSION['login'] == true): ?>
 
                     <a href="#" id="abrir-perfil">
                         <?php echo htmlspecialchars($nome); ?>
                     </a>
 
-                    <?php if ($tipoUsuario === 2): ?>
+                    <?php if ($tipoUsuario == 2): ?>
 
                         <a href="ver-curriculos.php">
                             Área de candidatos
@@ -82,6 +90,7 @@ if(isset($_SESSION['login'])) {
         </div>
 
     </header>
+
 
 
     <main>
@@ -444,7 +453,7 @@ if(isset($_SESSION['login'])) {
 
     <!-- MODAL DO PERFIL -->
 
-    <?php if (isset($_SESSION['logado']) && $_SESSION['logado'] == true): ?>
+    <?php if (isset($_SESSION['login']) && $_SESSION['login'] == true): ?>
 
         <div class="perfil-overlay" id="perfil-modal">
 
@@ -463,7 +472,7 @@ if(isset($_SESSION['login'])) {
                 <div class="perfil-header">
 
                     <img
-                        src="assets/img/imagem.jpg"
+                        src="<?php echo htmlspecialchars($icone); ?>"
                         alt="Foto de perfil"
                         class="foto-perfil"
                     >
@@ -493,12 +502,21 @@ if(isset($_SESSION['login'])) {
                     <div class="campo-perfil">
 
                         <span class="label">
-                            Cidade
+                            Endereço
                         </span>
 
                         <span class="valor">
                             <?php
-                            echo htmlspecialchars($cidade);
+                            echo htmlspecialchars(
+                                $logradouro . ", " .
+                                $numero . ", " .
+                                $complemento . ", " .
+                                $bairro . ", " .
+                                $cidade . " - " .
+                                $estado . ", " .
+                                substr($cep, 0, 5) . "-" .
+                                substr($cep, 5)
+                            );
                             ?>
                         </span>
 
@@ -583,7 +601,8 @@ if(isset($_SESSION['login'])) {
         }
 
     });
-</script>
+    </script>
 </body>
 
 </html>
+

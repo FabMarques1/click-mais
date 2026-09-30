@@ -20,6 +20,8 @@ if($result->num_rows > 0) {
     redirecionarComErro("Você já enviou currículo para essa vaga!", 'form.php');
 }
 
+$stmt->close();
+
 try{
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($curriculo) && $curriculo['error'] === UPLOAD_ERR_OK) {
             
@@ -36,8 +38,16 @@ try{
 
         $tamanhoMax = 2 * 1024 * 1024;
 
+        // Cada extensão aceita uma lista de mimes: o .docx, por baixo,
+        // é um .zip, e em alguns servidores o fileinfo identifica ele
+        // como application/zip em vez do mime "oficial" do Office.
         $mimesPermitidos = [
-            'pdf'  => 'application/pdf'
+            'pdf'  => ['application/pdf'],
+            'doc'  => ['application/msword'],
+            'docx' => [
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/zip',
+            ],
         ];
 
         if (!array_key_exists($extensao, $mimesPermitidos)) {
@@ -45,7 +55,7 @@ try{
         }
 
         $tipoMime = mime_content_type($caminhoTemp);
-        if ($tipoMime !== $mimesPermitidos[$extensao]) {
+        if (!in_array($tipoMime, $mimesPermitidos[$extensao], true)) {
             redirecionarComErro("Tipo de arquivo inválido.", 'form.php');
         }
 
@@ -84,5 +94,3 @@ try{
 }
 
 $conn->close();
-
-?>
