@@ -405,3 +405,28 @@ form button:focus-visible {
     }
 
 }
+
+/* ========================================
+   EXTRAS
+======================================== */
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+.login-erro {
+    padding: 12px 14px;
+    margin: 0 0 20px;
+    border: 1px solid #b95c66;
+    border-radius: 4px;
+    background-color: #321b23;
+    color: #ffd5da;
+}
+
+.btn-link {
+    margin-top: 10px;
+    text-align: center;
+    color: #9763e6;
+    text-decoration: none;
+}

@@ -81,7 +81,6 @@ form::before {
 ======================================== */
 
 form::after {
-    content: "Preencha seus dados para começar.";
 
     display: block;
 
@@ -578,10 +577,34 @@ button:active {
 
 }
 
-.form-group:has(#numero) {
+/* ========================================
+   CAMPOS QUE OCUPAM DUAS COLUNAS
+======================================== */
+
+.registro-erro {
+    grid-column: 1 / -1;
+    padding: 12px 14px;
+    margin: 12px 0 20px;
+    border: 1px solid #b95c66;
+    border-radius: 4px;
+    background-color: #321b23;
+    color: #ffd5da;
+}
+
+.btn-link {
+    margin-top: 10px;
+    text-align: center;
+    color: #9763e6;
+}
+
+.form-group:has(#email) {
     grid-column: 1 / -1;
 }
 
-.form-group:has(#telefone) {
+.form-group:has(#senha) {
+    grid-column: 1 / -1;
+}
+
+.form-group:has(#data_nascimento) {
     grid-column: 1 / -1;
 }
