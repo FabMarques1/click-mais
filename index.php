@@ -42,10 +42,6 @@ if(isset($_SESSION['login'])) {
                 CURRICULO<span>+</span>
             </h1>
             <nav>
-                <?php if(isset($_SESSION['login']) && $_SESSION['login'] == True): ?>
-                    <a href=""><?php echo $nome; ?></a>
-
-            <nav>
 
                 <?php if (isset($_SESSION['logado']) && $_SESSION['logado'] == true): ?>
 
@@ -542,48 +538,48 @@ if(isset($_SESSION['login'])) {
 
 
     <script>
-    const abrirPerfil = document.getElementById("abrir-perfil");
-    const fecharPerfil = document.getElementById("fechar-perfil");
-    const perfilModal = document.getElementById("perfil-modal");
+        const abrirPerfil = document.getElementById("abrir-perfil");
+        const fecharPerfil = document.getElementById("fechar-perfil");
+        const perfilModal = document.getElementById("perfil-modal");
 
-    // Abrir perfil
-    abrirPerfil.addEventListener("click", function(event) {
+        // Abrir perfil
+        abrirPerfil.addEventListener("click", function(event) {
 
-        event.preventDefault();
+            event.preventDefault();
 
-        perfilModal.classList.add("ativo");
+            perfilModal.classList.add("ativo");
 
-    });
+        });
 
-    // Fechar pelo botão X
-    fecharPerfil.addEventListener("click", function() {
-
-        perfilModal.classList.remove("ativo");
-
-    });
-
-    // Fechar clicando fora do card
-    perfilModal.addEventListener("click", function(event) {
-
-        if (event.target === perfilModal) {
+        // Fechar pelo botão X
+        fecharPerfil.addEventListener("click", function() {
 
             perfilModal.classList.remove("ativo");
 
-        }
+        });
 
-    });
+        // Fechar clicando fora do card
+        perfilModal.addEventListener("click", function(event) {
 
-    // Fechar pressionando ESC
-    document.addEventListener("keydown", function(event) {
+            if (event.target === perfilModal) {
 
-        if (event.key === "Escape") {
+                perfilModal.classList.remove("ativo");
 
-            perfilModal.classList.remove("ativo");
+            }
 
-        }
+        });
 
-    });
-</script>
+        // Fechar pressionando ESC
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+
+                perfilModal.classList.remove("ativo");
+
+            }
+
+        });
+    </script>
 </body>
 
 </html>

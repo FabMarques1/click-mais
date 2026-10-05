@@ -30,12 +30,12 @@ unset($_SESSION['login_erro'], $_SESSION['login_email'], $_SESSION['erro_toast']
         </div>
 
         <form action="enviar-login.php" method="POST">
+            <h3>Bem-vindo de volta!</h3>
             <?php if ($erro !== ''): ?>
                 <p class="login-erro" role="alert">
                     <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
                 </p>
             <?php endif; ?>
-            <h3>Bem-vindo de volta!</h3>
             <label for="email">
                 Digite seu e-mail
             </label>
