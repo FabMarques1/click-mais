@@ -29,7 +29,9 @@ if ($nome === '' || $data_nascimento === '' || $email === '' || $senha === '') {
     || $data_nascimento < '1000-01-01'
     || $nascimento > new DateTimeImmutable('today', $fuso)) {
     $erro = "Informe uma data de nascimento válida, que não seja futura.";
-    } elseif (mb_strlen($senha) < 8) {
+} elseif ($nascimento->diff(new DateTimeImmutable('today', $fuso))->y < 16) {
+    $erro = 'Não é possível se registrar no site, pois a lei permite o cadastro apenas para pessoas com 16 anos ou mais.';
+} elseif (mb_strlen($senha) < 8) {
         $erro = "A senha deve ter no mínimo 8 caracteres.";
 } elseif (mb_strlen($nome) > 40 || mb_strlen($sobrenome) > 75 || mb_strlen($email) > 80) {
     $erro = "Nome, sobrenome ou email excede o tamanho permitido.";
