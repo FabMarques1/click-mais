@@ -1,51 +1,49 @@
 <?php
+session_start();
 
-require_once("config/database.php");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: registro.php", true, 303);
+    exit;
+}
 
 $erro = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $nome            = ucfirst(trim($_POST['nome'] ?? ''));
-    $sobrenome       = ucfirst(trim($_POST['sobrenome'] ?? ''));
-    $data_nascimento = $_POST['data_nascimento'] ?? '';
-    $email           = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-    $senha           = $_POST['senha'];
-    $cep             = preg_replace('/\D/', '', $_POST['cep'] ?? '');
-    $cidade          = (int) ($_POST['cidade'] ?? 0);
-    $logradouro      = trim($_POST['logradouro'] ?? '');
-    $numero          = trim($_POST['numero'] ?? '');
-    $bairro          = trim($_POST['bairro'] ?? '');
-    $complemento     = trim($_POST['complemento'] ?? '');
-    $complemento     = $complemento === '' ? null : $complemento;
-    $telefone        = preg_replace('/\D/', '', $_POST['telefone'] ?? '');
+$nome            = is_string($_POST['nome'] ?? null) ? strtolower(ucfirst(trim($_POST['nome']))) : '';
+$sobrenome       = is_string($_POST['sobrenome'] ?? null) ? ucfirst(trim($_POST['sobrenome'])) : '';
+$data_nascimento = is_string($_POST['data_nascimento'] ?? null) ? $_POST['data_nascimento'] : '';
+$email           = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+$senha           = is_string($_POST['senha'] ?? null) ? $_POST['senha'] : '';
 
-    $nascimento = DateTime::createFromFormat('Y-m-d', $data_nascimento);
+$fuso = new DateTimeZone('America/Sao_Paulo');
+$nascimento = preg_match('/^\d{4}-\d{2}-\d{2}$/D', $data_nascimento)
+    ? DateTimeImmutable::createFromFormat('!Y-m-d', $data_nascimento, $fuso)
+    : false;
 
-    if ($nome === '' || $sobrenome === '' || $logradouro === '' || $numero === '' || $bairro === '') {
+if ($nome === '' || $data_nascimento === '' || $email === '' || $senha === '') {
         $erro = "Preencha todos os campos obrigatórios.";
-    } elseif (!$email) {
+} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $erro = "Email inválido.";
-    } elseif (mb_strlen($senha) < 8) {
+} elseif (!$nascimento || $nascimento->format('Y-m-d') !== $data_nascimento
+    || $data_nascimento < '1000-01-01'
+    || $nascimento > new DateTimeImmutable('today', $fuso)) {
+    $erro = "Informe uma data de nascimento válida, que não seja futura.";
+} elseif ($nascimento->diff(new DateTimeImmutable('today', $fuso))->y < 16) {
+    $erro = 'Não é possível se registrar no site, pois a lei permite o cadastro apenas para pessoas com 16 anos ou mais. Volte quando tiver idade suficiente para se cadastrar.';
+} elseif (mb_strlen($senha) < 8) {
         $erro = "A senha deve ter no mínimo 8 caracteres.";
-    } elseif (strlen($cep) !== 8) {
-        $erro = "CEP inválido.";
-    } elseif (!$cidade) {
-        $erro = "Selecione o estado e a cidade.";
-    } elseif (!$nascimento || $nascimento->format('Y-m-d') !== $data_nascimento || $nascimento > new DateTime()) {
-        $erro = "Data de nascimento inválida.";
-    } elseif (mb_strlen($logradouro) > 50 || mb_strlen($bairro) > 35) {
-        $erro = "Logradouro ou bairro excede o tamanho permitido.";
-    } elseif (isset($telefone) && strlen($telefone) < 10) {
-        $erro = "Telefone inválido.";
+} elseif (mb_strlen($nome) > 40 || mb_strlen($sobrenome) > 75 || mb_strlen($email) > 80) {
+    $erro = "Nome, sobrenome ou email excede o tamanho permitido.";
     }
 
 
     if ($erro === "") {
 
-        try {
+    require_once("config/database.php");
+    $transacaoIniciada = false;
 
-            $email = strtolower($email);
+        try {
 
             // Email já cadastrado?
             $stmt = $conn->prepare("SELECT id FROM tbl_usuario WHERE email = ?");
@@ -54,70 +52,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $emailExiste = $stmt->get_result()->num_rows > 0;
             $stmt->close();
 
-            // Cidade existe?
-            $stmt = $conn->prepare("SELECT id FROM tbl_cidade WHERE id = ?");
-            $stmt->bind_param("i", $cidade);
-            $stmt->execute();
-            $cidadeExiste = $stmt->get_result()->num_rows > 0;
-            $stmt->close();
-
             if ($emailExiste) {
 
                 $erro = "Este email já está cadastrado.";
-
-            } elseif (!$cidadeExiste) {
-
-                $erro = "Cidade inválida.";
 
             } else {
 
                 $senhaHash = hash('sha256', $senha);
 
-                // Os três inserts precisam acontecer juntos
                 $conn->begin_transaction();
+                $transacaoIniciada = true;
 
                 // 1. Usuário
                 $stmt = $conn->prepare("INSERT INTO tbl_usuario (nome, sobrenome, data_nascimento, email, senha)
                                         VALUES (?, ?, ?, ?, ?)");
                 $stmt->bind_param("sssss", $nome, $sobrenome, $data_nascimento, $email, $senhaHash);
                 $stmt->execute();
-                $id_usuario = $conn->insert_id;
-                $stmt->close();
 
-                // 2. Telefone
-                if (isset($telefone)) {
-                    $stmt = $conn->prepare("INSERT INTO tbl_telefone (telefone, id_usuario)
-                                            VALUES (?, ?)");
-                    $stmt->bind_param("si", $telefone, $id_usuario);
-                    $stmt->execute();
-                    $stmt->close();
-                }
-
-                // 3. Endereço
-                $stmt = $conn->prepare("INSERT INTO tbl_endereco (cep, logradouro, complemento, bairro, numero, id_cidade)
-                                        VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("sssssi", $cep, $logradouro, $complemento, $bairro, $numero, $cidade);
-                $stmt->execute();
-                $id_endereco = $conn->insert_id;
-                $stmt->close();
-
-                // 4. Relação usuário <-> endereço
-                $stmt = $conn->prepare("INSERT INTO tbl_usuario_has_tbl_endereco (id_usuario, id_endereco)
-                                        VALUES (?, ?)");
-                $stmt->bind_param("ii", $id_usuario, $id_endereco);
-                $stmt->execute();
                 $stmt->close();
 
                 $conn->commit();
+            $transacaoIniciada = false;
+            unset($_SESSION['registro_erro'], $_SESSION['registro_dados']);
 
-                header("Location: index.php");
+            header("Location: index.php", true, 303);
                 exit;
 
             }
 
-        } catch (mysqli_sql_exception $e) {
+        } catch (Exception $e) {
 
+        if ($transacaoIniciada) {
             $conn->rollback();
+        }
 
             error_log($e->getMessage());
 
@@ -128,4 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         }
     }
+
+// Todo erro volta ao formulário; a senha nunca é guardada na sessão.
+$_SESSION['registro_erro'] = $erro;
+$_SESSION['registro_dados'] = compact('nome', 'sobrenome', 'data_nascimento', 'email');
+header("Location: registro.php", true, 303);
+exit;
 }
