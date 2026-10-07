@@ -1,0 +1,24 @@
+@theme {
+    /* Cores principais */
+    --color-primary: #2F94D4;
+    --color-primary-dark: #1C73B5;
+    --color-primary-light: #9ACAEF;
+    --color-secondary: #504f90;
+
+    /* Fundos */
+    --color-background: #FFFFFF;
+    --color-background-light: #F5F8FA;
+
+    /* Textos */
+    --color-text: #111111;
+    --color-text-secondary: #64748B;
+    --color-text-muted: #94A3B8;
+
+    /* Bordas */
+    --color-border: #E2E8F0;
+
+    /* Estados */
+    --color-success: #3B82F6;
+    --color-danger: #EF4444;
+    --color-warning: #F59E0B;
+}
