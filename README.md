@@ -1,12 +1,12 @@
-# Curriculo+
+# CLICK+
 
 Projeto voltado ao envio de currículos, desenvolvido na aula de Programação de Computadores II.
 
-Demo: [curriculomais.page.gd](https://curriculomais.page.gd)
+Demo: [Clique aqui para acessar](https://clickmais.page.gd)
 
 ## Sobre o projeto
 
-O Curriculo+ é uma aplicação web onde candidatos podem se cadastrar, fazer login e enviar seus currículos para vagas disponíveis. O sistema permite escolher uma vaga, preencher um resumo profissional e anexar o currículo em PDF, que fica associado ao perfil do usuário no banco de dados.
+O CLICK+ é uma aplicação web onde candidatos podem se cadastrar, fazer login e enviar seus currículos para vagas disponíveis. O sistema permite escolher uma vaga, preencher um resumo profissional e anexar o currículo em PDF, que fica associado ao perfil do usuário no banco de dados.
 
 ## Funcionalidades
 
