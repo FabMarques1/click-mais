@@ -62,8 +62,6 @@ if ($logado) {
             <?php else: ?>
                 <a href="login.php" class="text-sm font-semibold text-black transition hover:text-primary">Entrar</a>
             <?php endif; ?>
-
-            <a href="form.php" class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">Enviar currículo</a>
         </div>
 
         <button type="button" id="abrir-menu" class="rounded-lg border border-border p-2 text-text-secondary md:hidden" aria-label="Abrir menu">
