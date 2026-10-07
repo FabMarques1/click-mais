@@ -65,8 +65,7 @@ if ($erro === '') {
 
             unset($_SESSION['login_erro'], $_SESSION['login_email'], $_SESSION['erro_toast']['login.php']);
             $conn->close();
-            $destino = (int) $_SESSION['tipo_usuario'] === 2 ? 'ver-curriculos.php' : 'index.php';
-            header('Location: ' . $destino, true, 303);
+            header("Location: index.php");
             exit;
         }
 
