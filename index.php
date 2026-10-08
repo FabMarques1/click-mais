@@ -37,36 +37,65 @@ if ($logado) {
 
 <!-- HEADER -->
 <header class="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur">
-    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <a href="index.php" class="text-xl font-extrabold tracking-tight text-primary">
+    <div class="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+
+        <!-- Logo -->
+        <a href="index.php" class="relative z-10 text-xl font-extrabold tracking-tight text-primary">
             click<span class="text-text">+</span>
         </a>
 
-        <nav class="hidden items-center gap-10 md:flex">
+        <!-- Navegação centralizada -->
+        <nav class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 md:flex">
             <a href="#inicio" class="text-sm font-medium text-text-secondary transition hover:text-primary">Início</a>
             <a href="#vagas" class="text-sm font-medium text-text-secondary transition hover:text-primary">Vagas</a>
             <a href="#como-funciona" class="text-sm font-medium text-text-secondary transition hover:text-primary">Como funciona</a>
         </nav>
 
-        <div class="hidden items-center gap-4 md:flex">
+        <!-- Ações do usuário -->
+        <div class="relative z-10 hidden items-center gap-4 md:flex">
             <?php if ($logado): ?>
-                <button type="button" id="abrir-perfil" class="text-sm font-semibold text-primary transition hover:text-primary-dark">
-                    <?= htmlspecialchars($nome) ?>
-                </button>
 
                 <?php if ($tipoUsuario == 2): ?>
-                    <a href="ver-curriculos.php" class="text-sm font-medium text-text-secondary transition hover:text-primary">Área de candidatos</a>
+                    <a href="ver-curriculos.php" class="text-sm font-medium text-text-secondary transition hover:text-primary">
+                        Área de candidatos
+                    </a>
                 <?php endif; ?>
 
-                <a href="logout.php" class="text-sm font-semibold text-text-secondary transition hover:text-primary">Sair</a>
+                <a href="logout.php" class="text-sm font-semibold text-text-secondary transition hover:text-primary">
+                    Sair
+                </a>
+
+                <!-- Perfil do usuário à direita -->
+                <button
+                    type="button"
+                    id="abrir-perfil"
+                    class="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-text transition hover:border-primary hover:text-primary cursor-pointer"
+                    aria-label="Abrir perfil de <?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>"
+                >
+
+                    <span class="max-w-32 truncate"><?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?></span>
+                </button>
+
             <?php else: ?>
-                <a href="login.php" class="text-sm font-semibold text-black transition hover:text-primary">Entrar</a>
+
+                <a href="login.php" class="text-sm font-semibold text-black transition hover:text-primary">
+                    Entrar
+                </a>
+
             <?php endif; ?>
         </div>
 
-        <button type="button" id="abrir-menu" class="rounded-lg border border-border p-2 text-text-secondary md:hidden" aria-label="Abrir menu">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <!-- Botão do menu mobile -->
+        <button
+            type="button"
+            id="abrir-menu"
+            class="rounded-lg border border-border p-2 text-text-secondary md:hidden"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="menu-mobile"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
     </div>
@@ -74,21 +103,36 @@ if ($logado) {
     <!-- Menu mobile -->
     <div id="menu-mobile" class="hidden border-t border-border bg-white px-6 py-4 md:hidden">
         <div class="flex flex-col gap-3 text-sm font-medium text-text-secondary">
-            <a href="#inicio">Início</a>
-            <a href="#vagas">Vagas</a>
-            <a href="#como-funciona">Como funciona</a>
+            <a href="#inicio" class="transition hover:text-primary">Início</a>
+            <a href="#vagas" class="transition hover:text-primary">Vagas</a>
+            <a href="#como-funciona" class="transition hover:text-primary">Como funciona</a>
 
             <?php if ($logado): ?>
-                <button type="button" id="abrir-perfil-mobile" class="text-left font-semibold text-primary"><?= htmlspecialchars($nome) ?></button>
+
+                <div class="flex items-center gap-2 border-t border-border pt-3 font-semibold text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 3.75-1.452A8.96 8.96 0 0 0 21 16.05M15 19.128v-.003a6.75 6.75 0 0 0-6 0v.003m6 0a9 9 0 1 1-6 0m6 0a3 3 0 1 0-6 0m6 0a3 3 0 1 1-6 0" />
+                    </svg>
+                    <button type="button" id="abrir-perfil-mobile" class="min-w-0 truncate text-left">
+                        <?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>
+                    </button>
+                </div>
+
                 <?php if ($tipoUsuario == 2): ?>
-                    <a href="ver-curriculos.php">Área de candidatos</a>
+                    <a href="ver-curriculos.php" class="transition hover:text-primary">Área de candidatos</a>
                 <?php endif; ?>
-                <a href="logout.php">Sair</a>
+
+                <a href="logout.php" class="transition hover:text-primary">Sair</a>
+
             <?php else: ?>
-                <a href="login.php">Entrar</a>
+
+                <a href="login.php" class="transition hover:text-primary">Entrar</a>
+
             <?php endif; ?>
 
-            <a href="form.php" class="rounded-lg bg-primary px-4 py-2.5 text-center font-semibold text-white">Enviar currículo</a>
+            <a href="form.php" class="rounded-lg bg-primary px-4 py-2.5 text-center font-semibold text-white transition hover:bg-primary-dark">
+                Enviar currículo
+            </a>
         </div>
     </div>
 </header>
