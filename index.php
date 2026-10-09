@@ -370,7 +370,7 @@ $conn->close();
 <?php if ($logado): ?>
 <!-- MODAL DE PERFIL -->
 <div id="perfil-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-6 backdrop-blur-sm">
-    <div class="relative w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
+    <div class="perfil-modal-conteudo relative w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
 
         <button type="button" id="fechar-perfil" class="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full text-2xl text-text-muted transition hover:bg-background-light hover:text-text" aria-label="Fechar">
             ×
@@ -412,7 +412,6 @@ document.getElementById("abrir-menu").addEventListener("click", () => menuMobile
 
 // Filtros de modalidade + contador
 const filtros = document.querySelectorAll(".filtro");
-const contador = document.getElementById("contador");
 const ativo = ["bg-primary", "text-white", "border-primary"];
 const inativo = ["bg-white", "text-text-secondary", "border-border"];
 
@@ -449,7 +448,14 @@ filtros.forEach(botao => {
 const perfilModal = document.getElementById("perfil-modal");
 
 if (perfilModal) {
-    const abrir = () => { perfilModal.classList.remove("hidden"); perfilModal.classList.add("flex"); };
+    const conteudoPerfil = perfilModal.querySelector(".perfil-modal-conteudo");
+    const abrir = () => {
+        perfilModal.classList.remove("hidden");
+        perfilModal.classList.add("flex");
+        conteudoPerfil.classList.remove("perfil-modal-conteudo-animar");
+        void conteudoPerfil.offsetWidth;
+        conteudoPerfil.classList.add("perfil-modal-conteudo-animar");
+    };
     const fechar = () => { perfilModal.classList.remove("flex"); perfilModal.classList.add("hidden"); };
 
     document.getElementById("abrir-perfil").addEventListener("click", abrir);

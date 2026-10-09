@@ -8,7 +8,7 @@ require_once __DIR__ . '/config/database.php';
 
 header('Content-Type: text/html; charset=utf-8');
 
-if (!isset($_SESSION['login']) || (int) ($_SESSION['tipo_usuario'] ?? 0) !== 2) {
+if (!isset($_SESSION['login']) || (int) ($_SESSION['tipo_usuario'] ?? 0) < 2) {
     header('Location: index.php');
     exit;
 }
@@ -20,10 +20,7 @@ function eCurriculo($valor): string
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
 
-$filtroVaga = filter_input(INPUT_GET, 'vaga', FILTER_VALIDATE_INT);
-$filtroVaga = ($filtroVaga !== false && $filtroVaga !== null && $filtroVaga > 0)
-    ? $filtroVaga
-    : '';
+$filtroVaga = $_GET['vaga'] ?? '';
 
 $filtroOrdem = strtoupper($_GET['ordem'] ?? 'ASC');
 $filtroOrdem = in_array($filtroOrdem, ['ASC', 'DESC'], true) ? $filtroOrdem : 'ASC';
@@ -43,19 +40,21 @@ try {
 
     // Conta os currículos para calcular a paginação.
     $sqlTotal = "
-        SELECT COUNT(*) AS total
-        FROM tbl_curriculo c
+        SELECT COUNT(id_curriculo) AS total
+        FROM tbl_curriculo_tem_vaga cv
+        INNER JOIN tbl_curriculo c ON cv.id_curriculo = c.id
         INNER JOIN tbl_usuario u ON c.id_usuario = u.id
-        INNER JOIN tbl_vaga v ON c.id = v.id
-        WHERE u.tipo_usuario != 3
+        INNER JOIN tbl_vaga v ON cv.id_vaga = v.id
+        WHERE v.id_instituicao = ?
     ";
 
     if ($filtroVaga !== '') {
-        $sqlTotal .= " AND v.id = ?";
+        $sqlTotal .= " AND v.titulo = ?";
         $stmtTotal = $conn->prepare($sqlTotal);
-        $stmtTotal->bind_param('i', $filtroVaga);
+        $stmtTotal->bind_param('is', $instituicao,$filtroVaga);
     } else {
         $stmtTotal = $conn->prepare($sqlTotal);
+        $stmtTotal->bind_param('s', $instituicao);
     }
 
     $stmtTotal->execute();
@@ -90,7 +89,7 @@ try {
     ";
 
     if ($filtroVaga !== '') {
-        $sql .= " AND v.id = ?";
+        $sql .= " AND v.titulo = ?";
     }
 
     $sql .= " ORDER BY u.nome $filtroOrdem, u.sobrenome ASC LIMIT ? OFFSET ?";
@@ -98,7 +97,7 @@ try {
     $stmt = $conn->prepare($sql);
 
     if ($filtroVaga !== '') {
-        $stmt->bind_param('iiii', $tipoUsuario, $filtroVaga, $porPagina, $offset);
+        $stmt->bind_param('isii', $instituicao, $filtroVaga, $porPagina, $offset);
     } else {
         $stmt->bind_param('iii', $instituicao, $porPagina, $offset);
     }
@@ -217,8 +216,8 @@ function linkPagina(int $pagina, array $parametros): string
                         <option value="">Todas as vagas</option>
 
                         <?php foreach ($vagas as $vaga): ?>
-                            <option value="<?= (int) $vaga['id'] ?>"
-                                <?= (string) $filtroVaga === (string) $vaga['id'] ? 'selected' : '' ?>>
+                            <option value="<?= (string) $vaga['titulo'] ?>"
+                                <?= (string) $filtroVaga === (string) $vaga['titulo'] ? 'selected' : '' ?>>
                                 <?= eCurriculo($vaga['titulo']) ?>
                             </option>
                         <?php endforeach; ?>

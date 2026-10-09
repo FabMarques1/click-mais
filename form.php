@@ -48,10 +48,6 @@ $partesEndereco = array_filter(
 );
 
 $enderecoCompleto = implode(', ', $partesEndereco);
-
-$stmtVagas = $conn->prepare("SELECT id, titulo FROM tbl_vaga ORDER BY titulo ASC");
-$stmtVagas->execute();
-$resultVagas = $stmtVagas->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -105,7 +101,7 @@ $resultVagas = $stmtVagas->get_result();
                         </h1>
 
                         <p class="mt-4 max-w-md text-base leading-7 text-text-secondary">
-                            Escolha uma vaga e envie seu currículo para participar do processo seletivo.
+                            Envie e salve seu currículo para participar de futuros processos seletivos. Preencha os campos no formulário e finalize sua candidatura.
                         </p>
 
                         <div class="mt-8 space-y-5">
@@ -118,8 +114,8 @@ $resultVagas = $stmtVagas->get_result();
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-sm font-bold text-text">Escolha a vaga</h2>
-                                    <p class="text-sm text-text-secondary">Encontre uma oportunidade para você.</p>
+                                    <h2 class="text-sm font-bold text-text">Conte-nos sobre você</h2>
+                                    <p class="text-sm text-text-secondary">Dê o pitch de você mesmo, destaque suas habilidades e experiências.</p>
                                 </div>
                             </div>
 
@@ -131,8 +127,8 @@ $resultVagas = $stmtVagas->get_result();
                                     </svg>
                                 </div>
                                 <div>
-                                    <h2 class="text-sm font-bold text-text">Anexe seu currículo</h2>
-                                    <p class="text-sm text-text-secondary">PDF, DOC ou DOCX.</p>
+                                    <h2 class="text-sm font-bold text-text">Envie o currículo</h2>
+                                    <p class="text-sm text-text-secondary">Monte e escolha o currículo que mais se encaixa com você.</p>
                                 </div>
                             </div>
 
@@ -206,21 +202,6 @@ $resultVagas = $stmtVagas->get_result();
                                         </label>
 
                                         <textarea name="resumoProfissional" id="resumoProfissional" maxlength="200" rows="3" placeholder="Experiências, habilidades e objetivos profissionais..." class="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm leading-6 text-text outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/10"></textarea>
-                                    </div>
-
-                                    <div>
-                                        <label for="vaga" class="mb-1.5 block text-sm font-semibold text-text">Vaga desejada <span class="text-danger">*</span></label>
-
-                                        <select name="vaga" id="vaga" required class="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-text outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10">
-                                            <option value="">Selecione uma vaga</option>
-
-                                            <?php while ($rowVaga = $resultVagas->fetch_assoc()): ?>
-                                                <option value="<?= (int) $rowVaga['id'] ?>">
-                                                    <?= e($rowVaga['titulo']) ?>
-                                                </option>
-                                            <?php endwhile; ?>
-
-                                        </select>
                                     </div>
 
                                 </section>
@@ -336,6 +317,5 @@ $resultVagas = $stmtVagas->get_result();
 </html>
 
 <?php
-$stmtVagas->close();
 $conn->close();
 ?>
