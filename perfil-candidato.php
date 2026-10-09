@@ -38,7 +38,7 @@ try{
             FROM tbl_usuario u
             LEFT JOIN tbl_telefone t ON t.id_usuario = u.id
             INNER JOIN tbl_curriculo c ON c.id_usuario = u.id
-            INNER JOIN tbl_vaga v ON c.id_vaga = v.id
+            INNER JOIN tbl_vaga v ON c.id = v.id
             WHERE u.email = ? AND v.titulo = ?
             GROUP BY u.id, u.nome, u.sobrenome, u.email, u.data_nascimento, c.resumo_profissional, v.titulo, c.curriculo";
 
@@ -72,7 +72,7 @@ try{
                         e.numero,
                         c.nome AS cidade,
                         es.sigla AS estado
-                    FROM tbl_usuario_has_tbl_endereco ue
+                    FROM tbl_usuario_tem_endereco ue
                     INNER JOIN tbl_endereco e
                         ON ue.id_endereco = e.id
                     INNER JOIN tbl_cidade c

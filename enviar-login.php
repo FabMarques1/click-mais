@@ -20,9 +20,10 @@ if ($erro === '') {
     try {
         require_once __DIR__ . '/config/database.php';
 
-        $query = 'SELECT u.id, u.nome, u.sobrenome, u.data_nascimento, u.email, u.senha, t.id AS tipo
+        $query = 'SELECT u.id, u.nome, u.sobrenome, u.data_nascimento, u.email, u.senha, t.id AS tipo, ui.id_instituicao
                   FROM tbl_usuario u
                   INNER JOIN tbl_tipo_usuario t ON u.tipo_usuario = t.id
+                  LEFT JOIN tbl_usuario_tem_instituicao ui ON u.id = ui.id_usuario
                   WHERE u.email = ?';
         $stmtUser = $conn->prepare($query);
         $stmtUser->bind_param('s', $email);
@@ -57,6 +58,7 @@ if ($erro === '') {
             $_SESSION['sobrenome'] = $rowUser['sobrenome'];
             $_SESSION['email'] = $rowUser['email'];
             $_SESSION['tipo_usuario'] = $rowUser['tipo'];
+            $_SESSION['instituicao'] = $rowUser['id_instituicao'] ?? null;
 
             // O cadastro pode ainda não ter um endereço preenchido.
             foreach (['cep', 'logradouro', 'complemento', 'bairro', 'numero', 'cidade', 'estado'] as $campo) {

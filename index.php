@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/config/database.php';
+
+
 $logado = isset($_SESSION['login']) && $_SESSION['login'] == true;
 
 if ($logado) {
@@ -22,13 +25,36 @@ if ($logado) {
     $endereco = implode(', ', array_filter([$logradouro, $numero, $complemento, $bairro, $cidadeEstado, $cepFormatado]));
 }
 
-$query = "SELECT titulo, descricao, created_at FROM tbl_vaga
-          ORDER BY created_at DESC
-          LIMIT 6";
+$query = "SELECT titulo, resumo, created_at, modelo, instituicao, cidade, estado, sigla
+            FROM (
+                SELECT
+                    v.titulo,
+                    v.resumo,
+                    DATE_FORMAT(v.created_at, '%d/%m/%Y - %H:%i') AS created_at,
+                    mv.modelo,
+                    i.nome   AS instituicao,
+                    c.nome   AS cidade,
+                    es.nome  AS estado,
+                    es.sigla AS sigla,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY v.id_modelo_vaga
+                        ORDER BY v.created_at DESC
+                    ) AS posicao
+                FROM tbl_vaga v
+                INNER JOIN tbl_modelo_vaga mv ON v.id_modelo_vaga = mv.id
+                INNER JOIN tbl_instituicao i  ON v.id_instituicao = i.id
+                LEFT JOIN tbl_endereco e      ON i.id_endereco = e.id
+                LEFT JOIN tbl_cidade c        ON e.id_cidade = c.id
+                LEFT JOIN tbl_estado es       ON c.id_estado = es.id
+            ) AS ranking
+            WHERE posicao <= 6
+            ORDER BY modelo, posicao";
+
 $stmt = $conn->prepare($query);
 $stmt->execute();
-$vagas = $stmt->get_result()->fetch_assoc();
+$vagas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +89,7 @@ $stmt->close();
         <div class="relative z-10 hidden items-center gap-4 md:flex">
             <?php if ($logado): ?>
 
-                <?php if ($tipoUsuario == 2): ?>
+                <?php if ($tipoUsuario >= 2): ?>
                     <a href="ver-curriculos.php" class="text-sm font-medium text-text-secondary transition hover:text-primary">
                         Área de candidatos
                     </a>
@@ -137,10 +163,7 @@ $stmt->close();
                 <a href="login.php" class="transition hover:text-primary">Entrar</a>
 
             <?php endif; ?>
-
-            <a href="form.php" class="rounded-lg bg-primary px-4 py-2.5 text-center font-semibold text-white transition hover:bg-primary-dark">
-                Enviar currículo
-            </a>
+            
         </div>
     </div>
 </header>
@@ -220,7 +243,11 @@ $stmt->close();
                 </div>
 
                 <div class="flex items-end">
-                    <button type="button" class="w-full rounded-xl bg-primary px-8 py-3 font-semibold text-white transition hover:bg-primary-dark">Buscar</button>
+                    <?php if (!$logado): ?>
+                        <a href="login.php"><button type="button" class="w-full rounded-xl bg-primary px-8 py-3 font-semibold text-white transition hover:bg-primary-dark">Buscar</button></a>
+                    <?php else: ?>
+                        <button type="button" class="w-full rounded-xl bg-primary px-8 py-3 font-semibold text-white transition hover:bg-primary-dark">Buscar</button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -233,50 +260,50 @@ $stmt->close();
                 <button type="button" data-filtro="Híbrido" class="filtro rounded-full border border-border bg-white px-4 py-1.5 text-sm font-medium text-text-secondary transition hover:border-primary hover:text-primary">Híbrido</button>
                 <button type="button" data-filtro="Presencial" class="filtro rounded-full border border-border bg-white px-4 py-1.5 text-sm font-medium text-text-secondary transition hover:border-primary hover:text-primary">Presencial</button>
             </div>
-
-            <p class="text-sm text-text-secondary"><span id="contador">1</span> vaga(s) encontrada(s)</p>
+            <?php
+            
+            ?>
+            <p class="text-sm text-text-secondary"><span id="contador">6 vaga(s) encontrada(s)</span></p>
         </div>
 
         <!-- Cards (substituir pelo loop do banco de dados) -->
         <div id="lista-vagas" class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 
-            <!-- 6 PRIMEIRAS VAGAS -->
-
             <?php foreach ($vagas as $vaga): ?>
-            <article data-modalidade="Híbrido" class="vaga flex flex-col rounded-2xl border border-border bg-white p-6 shadow-sm transition hover:border-primary/40 hover:shadow-md">
+                <article data-modalidade="<?php echo htmlspecialchars($vaga['modelo']); ?>" class="vaga flex flex-col rounded-2xl border border-border bg-white p-6 shadow-sm transition hover:border-primary/40 hover:shadow-md">
 
-                <div class="flex items-start justify-between">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-lg font-bold text-primary">A</div>
-                    <span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Híbrido</span>
-                </div>
+                    <div class="flex items-start justify-between">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-lg font-bold text-primary">A</div>
+                        <span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"><?php echo htmlspecialchars($vaga['modelo']); ?></span>
+                    </div>
 
-                <h3 class="mt-5 text-lg font-bold"><?php echo htmlspecialchars($vaga['titulo']); ?></h3>
+                    <h3 class="mt-5 text-lg font-bold"><?php echo htmlspecialchars($vaga['titulo']); ?></h3>
 
-                <div class="mt-2 space-y-1 text-sm text-text-secondary">
-                    <p class="font-medium">Agência Criativa</p>
-                    <p class="flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        São Paulo - SP
+                    <div class="mt-2 space-y-1 text-sm text-text-secondary">
+                        <p class="font-medium"><?php echo htmlspecialchars($vaga['instituicao']); ?></p>
+                        <p class="flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <?php echo htmlspecialchars($vaga['cidade'] . ', ' . $vaga['estado'] . ' - ' . $vaga['sigla']); ?>
+                        </p>
+                    </div>
+
+                    <p class="mt-4 flex-1 text-sm leading-6 text-text-secondary">
+                        <?php echo htmlspecialchars($vaga['resumo']); ?>
                     </p>
-                </div>
 
-                <p class="mt-4 flex-1 text-sm leading-6 text-text-secondary">
-                    Planejamento de campanhas, gestão de redes sociais e análise de métricas de desempenho.
-                </p>
-
-                <div class="mt-6 flex items-center justify-between border-t border-border pt-4">
-                    <span class="flex items-center gap-1.5 text-xs text-text-muted">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Hoje
-                    </span>
-                    <a href="#" class="text-sm font-semibold text-primary transition hover:text-primary-dark">Ver vaga</a>
-                </div>
-            </article>
+                    <div class="mt-6 flex items-center justify-between border-t border-border pt-4">
+                        <span class="flex items-center gap-1.5 text-xs text-text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <?php echo htmlspecialchars($vaga['created_at']); ?>
+                        </span>
+                        <a href="#" class="text-sm font-semibold text-primary transition hover:text-primary-dark">Ver vaga</a>
+                    </div>
+                </article>
             <?php endforeach; ?>
 
         </div>
@@ -399,7 +426,11 @@ function filtrarVagas(modalidade) {
         if (mostrar) total++;
     });
 
-    contador.textContent = total;
+    if(total > 0) {
+        contador.textContent = total + " vaga(s) encontrada(s)";
+    } else {
+        contador.textContent = "Nenhuma vaga encontrada";
+    }
 }
 
 filtros.forEach(botao => {
