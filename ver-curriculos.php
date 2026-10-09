@@ -29,7 +29,6 @@ $porPagina = 10;
 $paginaAtual = max(1, (int) ($_GET['pagina'] ?? 1));
 
 try {
-    // Lista de vagas para o filtro.
     $stmtVagas = $conn->prepare(
         "SELECT id, titulo FROM tbl_vaga ORDER BY titulo ASC"
     );
@@ -38,7 +37,6 @@ try {
     $vagas = $resultVaga->fetch_all(MYSQLI_ASSOC);
     $stmtVagas->close();
 
-    // Conta os currículos para calcular a paginação.
     $sqlTotal = "
         SELECT COUNT(id_curriculo) AS total
         FROM tbl_curriculo_tem_vaga cv
@@ -51,7 +49,7 @@ try {
     if ($filtroVaga !== '') {
         $sqlTotal .= " AND v.titulo = ?";
         $stmtTotal = $conn->prepare($sqlTotal);
-        $stmtTotal->bind_param('is', $instituicao,$filtroVaga);
+        $stmtTotal->bind_param('is', $instituicao, $filtroVaga);
     } else {
         $stmtTotal = $conn->prepare($sqlTotal);
         $stmtTotal->bind_param('s', $instituicao);
@@ -71,7 +69,6 @@ try {
 
     $offset = ($paginaAtual - 1) * $porPagina;
 
-    // Busca os candidatos.
     $sql = "
         SELECT
             u.nome,
@@ -141,12 +138,16 @@ function linkPagina(int $pagina, array $parametros): string
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
 </head>
 
-<body class="min-h-screen bg-background-light font-sans text-text antialiased">
+<body class="relative min-h-screen overflow-x-hidden bg-background-light font-[Arial,sans-serif] text-text antialiased">
 
-    <!-- Cabeçalho -->
-    <header class="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur">
+    <div id="page-loader" class="hidden fixed inset-0 z-[9999] items-center justify-center bg-background">
+        <div class="h-12 w-12 animate-spin rounded-full border-4 border-primary-light border-t-primary"></div>
+    </div>
+
+    <header class="sticky top-0 z-40 border-b border-border bg-white">
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href="index.php" class="text-xl font-extrabold tracking-tight text-primary">
+            <a href="index.php"
+               class="text-xl font-extrabold tracking-tight text-primary">
                 click<span class="text-text">+</span>
             </a>
 
@@ -162,7 +163,7 @@ function linkPagina(int $pagina, array $parametros): string
                 </span>
 
                 <a href="logout.php"
-                   class="rounded-lg px-3 py-2 text-sm font-semibold text-text-secondary transition hover:bg-background-light hover:text-primary">
+                   class="rounded-lg px-3 py-2 text-sm font-semibold text-text-secondary">
                     Sair
                 </a>
             </div>
@@ -171,38 +172,35 @@ function linkPagina(int $pagina, array $parametros): string
 
     <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
 
-        <!-- Título da página -->
         <section class="mb-8">
-            <a href="index.php" class="mb-5 inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition hover:text-primary">
+            <a href="index.php"
+               class="mb-5 inline-flex items-center gap-2 text-sm font-medium text-text-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"/>
                 </svg>
                 Voltar ao início
             </a>
 
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <p class="text-sm font-bold uppercase tracking-widest text-primary">
                         Recrutamento
                     </p>
+
                     <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-text sm:text-4xl">
                         Currículos recebidos
                     </h1>
-                    <p class="mt-2 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
-                        Consulte os candidatos, filtre por vaga e acesse os detalhes de cada perfil.
-                    </p>
                 </div>
 
-                <div class="rounded-xl border border-border bg-white px-4 py-3 sm:min-w-40">
+                <div class="rounded-xl border border-border bg-white px-4 py-3 shadow-sm sm:min-w-40">
                     <p class="text-xs font-medium text-text-secondary">Candidaturas encontradas</p>
-                    <p class="mt-1 text-2xl font-extrabold text-text">
+                    <p class="mt-1 text-2xl font-extrabold">
                         <?= number_format($totalRegistros, 0, ',', '.') ?>
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- Filtros -->
         <section class="mb-6 rounded-2xl border border-border bg-white p-4 shadow-sm sm:p-5">
             <form action="ver-curriculos.php" method="GET" class="grid grid-cols-1 items-end gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_220px_auto_auto]">
 
@@ -212,11 +210,11 @@ function linkPagina(int $pagina, array $parametros): string
                     </label>
 
                     <select name="vaga" id="vaga"
-                            class="w-full rounded-xl border border-border bg-white px-3 py-3 text-sm text-text outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15">
+                            class="w-full rounded-xl border border-border bg-white px-3 py-3 text-sm text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                         <option value="">Todas as vagas</option>
 
                         <?php foreach ($vagas as $vaga): ?>
-                            <option value="<?= (string) $vaga['titulo'] ?>"
+                            <option value="<?= eCurriculo($vaga['titulo']) ?>"
                                 <?= (string) $filtroVaga === (string) $vaga['titulo'] ? 'selected' : '' ?>>
                                 <?= eCurriculo($vaga['titulo']) ?>
                             </option>
@@ -230,7 +228,7 @@ function linkPagina(int $pagina, array $parametros): string
                     </label>
 
                     <select name="ordem" id="ordem"
-                            class="w-full rounded-xl border border-border bg-white px-3 py-3 text-sm text-text outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15">
+                            class="w-full rounded-xl border border-border bg-white px-3 py-3 text-sm text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                         <option value="ASC" <?= $filtroOrdem === 'ASC' ? 'selected' : '' ?>>
                             A a Z
                         </option>
@@ -241,7 +239,7 @@ function linkPagina(int $pagina, array $parametros): string
                 </div>
 
                 <button type="submit"
-                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2">
+                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16M7 12h10m-7 7h4"/>
                     </svg>
@@ -249,16 +247,16 @@ function linkPagina(int $pagina, array $parametros): string
                 </button>
 
                 <a href="ver-curriculos.php"
-                   class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border px-5 py-3 text-sm font-semibold text-text-secondary transition hover:bg-background-light hover:text-text">
+                   class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border px-5 py-3 text-sm font-semibold text-text-secondary">
                     Limpar
                 </a>
             </form>
         </section>
 
-        <!-- Lista de candidatos -->
         <section class="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
             <div class="flex flex-col gap-1 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <h2 class="font-bold text-text">Lista de candidatos</h2>
+
                 <p class="text-sm text-text-secondary">
                     <?php if ($totalRegistros > 0): ?>
                         Exibindo <?= $offset + 1 ?>–<?= min($offset + $porPagina, $totalRegistros) ?>
@@ -271,7 +269,6 @@ function linkPagina(int $pagina, array $parametros): string
 
             <?php if ($resultInfo && $resultInfo->num_rows > 0): ?>
 
-                <!-- Tabela para telas médias e grandes -->
                 <div class="hidden overflow-x-auto md:block">
                     <table class="w-full border-collapse text-left">
                         <thead>
@@ -293,7 +290,7 @@ function linkPagina(int $pagina, array $parametros): string
 
                         <tbody class="divide-y divide-border">
                             <?php while ($rowInfo = $resultInfo->fetch_assoc()): ?>
-                                <tr class="transition hover:bg-background-light/70">
+                                <tr>
                                     <td class="px-6 py-4">
                                         <div class="font-semibold text-text">
                                             <?= eCurriculo($rowInfo['nome'] . ' ' . $rowInfo['sobrenome']) ?>
@@ -301,8 +298,7 @@ function linkPagina(int $pagina, array $parametros): string
                                     </td>
 
                                     <td class="px-6 py-4 text-sm text-text-secondary">
-                                        <a href="mailto:<?= eCurriculo($rowInfo['email']) ?>"
-                                           class="transition hover:text-primary">
+                                        <a href="mailto:<?= eCurriculo($rowInfo['email']) ?>">
                                             <?= eCurriculo($rowInfo['email']) ?>
                                         </a>
                                     </td>
@@ -315,7 +311,7 @@ function linkPagina(int $pagina, array $parametros): string
 
                                     <td class="px-6 py-4 text-right">
                                         <a href="perfil-candidato.php?email=<?= urlencode($rowInfo['email']) ?>&vaga=<?= urlencode($rowInfo['titulo']) ?>"
-                                           class="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-text transition hover:border-primary hover:text-primary">
+                                           class="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-text">
                                             Ver perfil
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M7 7h10v10"/>
@@ -328,26 +324,24 @@ function linkPagina(int $pagina, array $parametros): string
                     </table>
                 </div>
 
-                <?php
-                // O resultado já foi consumido na tabela acima.
-                // A versão para celular é preparada antes da consulta na versão final.
-                ?>
-
             <?php else: ?>
 
                 <div class="px-5 py-16 text-center sm:px-8">
-                    <div class="mx-auto flex size-14 items-center justify-center rounded-2xl bg-background-light text-text-secondary">
+                    <div class="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="size-7" aria-hidden="true">
                             <circle cx="11" cy="11" r="7"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="m16 16 4 4M8 11h6"/>
                         </svg>
                     </div>
+
                     <h3 class="mt-4 font-bold text-text">Nenhum currículo encontrado</h3>
+
                     <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-text-secondary">
                         Não encontramos candidaturas para os filtros selecionados. Tente escolher outra vaga ou limpar os filtros.
                     </p>
+
                     <a href="ver-curriculos.php"
-                       class="mt-5 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-dark">
+                       class="mt-5 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white">
                         Ver todas as candidaturas
                     </a>
                 </div>
@@ -365,7 +359,7 @@ function linkPagina(int $pagina, array $parametros): string
                     <div class="flex flex-wrap items-center gap-1.5">
                         <?php if ($paginaAtual > 1): ?>
                             <a href="<?= eCurriculo(linkPagina($paginaAtual - 1, $parametrosPaginacao)) ?>"
-                               class="inline-flex size-10 items-center justify-center rounded-lg border border-border text-sm font-semibold text-text-secondary transition hover:border-primary hover:text-primary"
+                               class="inline-flex size-10 items-center justify-center rounded-lg border border-border text-sm font-semibold text-text-secondary"
                                aria-label="Página anterior">
                                 &larr;
                             </a>
@@ -384,7 +378,7 @@ function linkPagina(int $pagina, array $parametros): string
                                 </span>
                             <?php else: ?>
                                 <a href="<?= eCurriculo(linkPagina($i, $parametrosPaginacao)) ?>"
-                                   class="inline-flex size-10 items-center justify-center rounded-lg border border-border text-sm font-semibold text-text-secondary transition hover:border-primary hover:text-primary">
+                                   class="inline-flex size-10 items-center justify-center rounded-lg border border-border text-sm font-semibold text-text-secondary">
                                     <?= $i ?>
                                 </a>
                             <?php endif; ?>
@@ -392,7 +386,7 @@ function linkPagina(int $pagina, array $parametros): string
 
                         <?php if ($paginaAtual < $totalPaginas): ?>
                             <a href="<?= eCurriculo(linkPagina($paginaAtual + 1, $parametrosPaginacao)) ?>"
-                               class="inline-flex size-10 items-center justify-center rounded-lg border border-border text-sm font-semibold text-text-secondary transition hover:border-primary hover:text-primary"
+                               class="inline-flex size-10 items-center justify-center rounded-lg border border-border text-sm font-semibold text-text-secondary"
                                aria-label="Próxima página">
                                 &rarr;
                             </a>
@@ -409,6 +403,8 @@ function linkPagina(int $pagina, array $parametros): string
     </main>
 
     <?php require __DIR__ . '/includes/notificacao.php'; ?>
+
+    <script src="js/page-transition.js"></script>
 
 </body>
 </html>

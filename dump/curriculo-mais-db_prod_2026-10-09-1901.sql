@@ -1,3 +1,6 @@
+CREATE DATABASE curriculo_mais_db;
+USE curriculo_mais_db;
+
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
 -- Host: localhost    Database: curriculo_mais_db

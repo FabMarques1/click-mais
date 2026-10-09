@@ -19,6 +19,10 @@ unset($_SESSION['login_erro'], $_SESSION['login_email'], $_SESSION['erro_toast']
 
 <body class="bg-background-light text-text">
 
+    <div id="page-loader" class="hidden fixed inset-0 z-[9999] items-center justify-center bg-background">
+        <div class="h-12 w-12 animate-spin rounded-full border-4 border-primary-light border-t-primary"></div>
+    </div>
+
     <main class="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-12">
 
         <!-- Detalhes de fundo -->
@@ -115,6 +119,7 @@ unset($_SESSION['login_erro'], $_SESSION['login_email'], $_SESSION['erro_toast']
         });
     </script>
 
-</body>
+    <script src="js/page-transition.js"></script>
 
+</body>
 </html>
