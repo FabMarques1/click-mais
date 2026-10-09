@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `curriculo_mais_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `curriculo_mais_db`;
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
 -- Host: localhost    Database: curriculo_mais_db
@@ -54,16 +52,13 @@ DROP TABLE IF EXISTS `tbl_curriculo`;
 CREATE TABLE `tbl_curriculo` (
   `id` smallint unsigned NOT NULL AUTO_INCREMENT,
   `resumo_profissional` varchar(200) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `curriculo` char(31) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `curriculo` char(32) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `data_envio` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id_usuario` smallint unsigned NOT NULL,
-  `id_vaga` smallint unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id_vaga` (`id_vaga`),
   KEY `id_usuario` (`id_usuario`),
-  CONSTRAINT `tbl_curriculo_ibfk_1` FOREIGN KEY (`id_vaga`) REFERENCES `tbl_vaga` (`id`),
   CONSTRAINT `tbl_curriculo_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `tbl_usuario` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,8 +67,36 @@ CREATE TABLE `tbl_curriculo` (
 
 LOCK TABLES `tbl_curriculo` WRITE;
 /*!40000 ALTER TABLE `tbl_curriculo` DISABLE KEYS */;
-INSERT INTO `tbl_curriculo` VALUES (1,'','curriculos/41269bc1f754d5d3.pdf','2026-09-04 23:13:50',2,1),(2,'um pouco sobre você...','curriculos/0e2284090f70e021.pdf','2026-09-05 00:57:34',3,1),(3,'Gosto de fazer pão de queijo, minha especialidade é hamburguer.','curriculos/e668957c91716593.pdf','2026-09-08 23:17:26',5,1),(4,'Teste','curriculos/fd17608984a4eaa0.pdf','2026-09-11 01:19:03',6,10),(5,'','curriculos/07005f3b85e21ca3.pdf','2026-09-28 17:28:13',19,1),(6,'','curriculos/df26d3748979647a.pdf','2026-09-28 18:54:03',19,3),(7,'Teste de telefone','curriculos/7c316e1f6436f0bc.pdf','2026-09-29 19:03:11',22,1);
+INSERT INTO `tbl_curriculo` VALUES (8,'','curriculos/0f6afa7253961850.docx','2026-10-09 19:50:52',6),(9,'','curriculos/24d9f8a2f8925926.pdf','2026-10-09 20:09:25',27);
 /*!40000 ALTER TABLE `tbl_curriculo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_curriculo_tem_vaga`
+--
+
+DROP TABLE IF EXISTS `tbl_curriculo_tem_vaga`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_curriculo_tem_vaga` (
+  `id_curriculo` smallint unsigned NOT NULL,
+  `id_vaga` smallint unsigned NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_curriculo`,`id_vaga`),
+  KEY `fk_tbl_curriculo_has_tbl_vaga_tbl_vaga1_idx` (`id_vaga`),
+  KEY `fk_tbl_curriculo_has_tbl_vaga_tbl_curriculo1_idx` (`id_curriculo`),
+  CONSTRAINT `fk_tbl_curriculo_has_tbl_vaga_tbl_curriculo1` FOREIGN KEY (`id_curriculo`) REFERENCES `tbl_curriculo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_tbl_curriculo_has_tbl_vaga_tbl_vaga1` FOREIGN KEY (`id_vaga`) REFERENCES `tbl_vaga` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_curriculo_tem_vaga`
+--
+
+LOCK TABLES `tbl_curriculo_tem_vaga` WRITE;
+/*!40000 ALTER TABLE `tbl_curriculo_tem_vaga` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tbl_curriculo_tem_vaga` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -94,7 +117,7 @@ CREATE TABLE `tbl_endereco` (
   PRIMARY KEY (`id`),
   KEY `fk_tbl_endereco_tbl_cidade1_idx` (`id_cidade`),
   CONSTRAINT `fk_tbl_endereco_tbl_cidade1` FOREIGN KEY (`id_cidade`) REFERENCES `tbl_cidade` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +126,7 @@ CREATE TABLE `tbl_endereco` (
 
 LOCK TABLES `tbl_endereco` WRITE;
 /*!40000 ALTER TABLE `tbl_endereco` DISABLE KEYS */;
-INSERT INTO `tbl_endereco` VALUES (3,'12701000','Avenida Nesralla Rubez','Casa','Centro',0,1480),(4,'12800000','Rua Prudente de Moraes','Apartamento','Centro',0,4075),(5,'12631212','Rua Murilo Marcondes','Casa','Pitéu',650,853),(6,'99999999','Teste de Rua','Teste de Complemento','Teste de Bairro',333,87),(7,'12800000','Rua Prudente de Moraes','Casa','Centro',55,4075),(8,'12800000','Cavalinhos Voadores','Casa','Centro',72,4075),(9,'69870000','estrada do envira','casa','sim',1200,27);
+INSERT INTO `tbl_endereco` VALUES (3,'12701000','Avenida Nesralla Rubez','Casa','Centro',0,1480),(4,'12800000','Rua Prudente de Moraes','Apartamento','Centro',0,4075),(5,'12631212','Rua Murilo Marcondes','Casa','Pitéu',650,853),(6,'99999999','Teste de Rua','Teste de Complemento','Teste de Bairro',333,87),(7,'12800000','Rua Prudente de Moraes','Casa','Centro',55,4075),(8,'12800000','Cavalinhos Voadores','Casa','Centro',72,4075),(9,'69870000','estrada do envira','casa','sim',1200,27),(10,'12820000','Teste de Rua Instituição','Casa','Centro',47,373);
 /*!40000 ALTER TABLE `tbl_endereco` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,13 +166,14 @@ DROP TABLE IF EXISTS `tbl_instituicao`;
 CREATE TABLE `tbl_instituicao` (
   `id` smallint unsigned NOT NULL AUTO_INCREMENT,
   `nome` varchar(50) NOT NULL,
-  `cnpj` char(14) NOT NULL,
-  `id_cidade` smallint unsigned NOT NULL,
+  `cnpj` char(18) NOT NULL,
+  `id_endereco` smallint unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_cnpj` (`cnpj`),
-  KEY `fk_tbl_instituicao_tbl_cidade1_idx` (`id_cidade`),
-  CONSTRAINT `fk_tbl_instituicao_tbl_cidade1` FOREIGN KEY (`id_cidade`) REFERENCES `tbl_cidade` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_tbl_instituicao_tbl_endereco1_idx` (`id_endereco`),
+  CONSTRAINT `fk_tbl_instituicao_tbl_endereco1` FOREIGN KEY (`id_endereco`) REFERENCES `tbl_endereco` (`id`),
+  CONSTRAINT `chk_tamanho_cnpj` CHECK ((char_length(`cnpj`) = 18))
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +182,32 @@ CREATE TABLE `tbl_instituicao` (
 
 LOCK TABLES `tbl_instituicao` WRITE;
 /*!40000 ALTER TABLE `tbl_instituicao` DISABLE KEYS */;
+INSERT INTO `tbl_instituicao` VALUES (1,'Instituição Zé Carlos','12.345.789/1234-01',8),(2,'Instituto Ayrton Senna','98.765.432/1012-34',10);
 /*!40000 ALTER TABLE `tbl_instituicao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_modelo_vaga`
+--
+
+DROP TABLE IF EXISTS `tbl_modelo_vaga`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_modelo_vaga` (
+  `id` tinyint unsigned NOT NULL AUTO_INCREMENT,
+  `modelo` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_modelo_vaga`
+--
+
+LOCK TABLES `tbl_modelo_vaga` WRITE;
+/*!40000 ALTER TABLE `tbl_modelo_vaga` DISABLE KEYS */;
+INSERT INTO `tbl_modelo_vaga` VALUES (1,'Presencial'),(2,'Remoto'),(3,'Híbrido');
+/*!40000 ALTER TABLE `tbl_modelo_vaga` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -199,7 +248,7 @@ CREATE TABLE `tbl_tipo_usuario` (
   `id` tinyint unsigned NOT NULL AUTO_INCREMENT,
   `nome` varchar(35) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,7 +257,7 @@ CREATE TABLE `tbl_tipo_usuario` (
 
 LOCK TABLES `tbl_tipo_usuario` WRITE;
 /*!40000 ALTER TABLE `tbl_tipo_usuario` DISABLE KEYS */;
-INSERT INTO `tbl_tipo_usuario` VALUES (1,'Usuário'),(2,'Recrutador'),(3,'Estagiário');
+INSERT INTO `tbl_tipo_usuario` VALUES (1,'Usuário'),(2,'Recrutador'),(3,'CEO'),(4,'Administrador');
 /*!40000 ALTER TABLE `tbl_tipo_usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,13 +275,13 @@ CREATE TABLE `tbl_usuario` (
   `data_nascimento` date NOT NULL,
   `email` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `senha` char(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipo_usuario` tinyint unsigned NOT NULL DEFAULT '1' COMMENT 'Informa o tipo de usuário através da chave estrangeira',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tipo_usuario` tinyint unsigned NOT NULL DEFAULT '1' COMMENT 'Informa o tipo de usuário através da chave estrangeira',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `fk_tipo_usuario` (`tipo_usuario`),
   CONSTRAINT `fk_tipo_usuario` FOREIGN KEY (`tipo_usuario`) REFERENCES `tbl_tipo_usuario` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,18 +290,18 @@ CREATE TABLE `tbl_usuario` (
 
 LOCK TABLES `tbl_usuario` WRITE;
 /*!40000 ALTER TABLE `tbl_usuario` DISABLE KEYS */;
-INSERT INTO `tbl_usuario` VALUES (1,'Administrador','','2026-01-01','admin@admin','7706b7a1acdf3e628591ca1a76db7001347f4b593e0ab1490cb3301d629dfd1d',2,'2026-09-28 22:09:19'),(2,'Rayssa','Silva','2026-01-01','lemesxd05@gmail.com','534c053bee9bb472fd9980eec46c11fa6ff01619ca867ff406ad966c2f45345a',1,'2026-09-28 22:09:19'),(3,'Bruno','Azevedo','2026-01-01','bruno.teste@email.com','b68cacbadaee450b8a8ce2dd44842f1de03ee9993ad97b5e99dea64ef93960ba',1,'2026-09-28 22:09:19'),(4,'Fabricio','Henrique','2026-01-01','fabricioteste2@gmail.com','acd0bf5b644718ded5db87aa3c554c587e27c61ef72560cde88266c51b76e65e',1,'2026-09-28 22:09:19'),(5,'Pedro','Emanoel','2026-01-01','pedroteste@gmail.com','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',1,'2026-09-28 22:09:19'),(6,'Fabricio','Henrique','2026-01-01','fabricioolimpio734@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53',1,'2026-09-28 22:09:19'),(7,'Teste','Usuario','2026-01-01','testeusuario@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53',1,'2026-09-28 22:09:19'),(8,'Fabricio','Henrique','2026-01-01','fabricioteste@gmail.com','c7b04530b1118f455f88fe5c6d3357f2edee635ebf27efcd71efe4cc5052d67e',1,'2026-09-28 22:09:19'),(9,'Luiz','Marins','2026-01-01','luizmarins033@gmaill.com','71ced60a700443544593e2ac4b314ca85e1979f2125861ff4d1680056687f1ff',1,'2026-09-28 22:09:19'),(10,'Luiz','Coutinho','2026-01-01','luizcoutinho@gmail.com','042b09e1fa67356fa0836ce06ada0ea143c03239e86f62f803e12063ff387c9f',1,'2026-09-28 22:09:19'),(15,'Gustavo','Rodrigues','1992-06-02','gustavortb@gmail.com','0a94ef45c0003a9a765076681bf895df98a954c935b36fd046625fa48d76a6ac',1,'2026-09-28 22:09:19'),(16,'Teste','Usuário','2009-09-22','testeusuario2@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53',1,'2026-09-28 22:09:19'),(19,'Bruno','Azevedo','2009-08-20','brunoazevedo1309@todosmail.com','e65099a3a50fade4991ccbec6a807b68f08d193e67950bcfd410e6bcdd931376',1,'2026-09-28 22:09:19'),(20,'Teste','Usuário3','2009-09-22','testeusuario3@gmail.com','2f2442394496f88ca50db70f53f6bc7a3b0f402a4f9680e30358128e215bf37b',1,'2026-09-28 22:09:19'),(21,'A','A','2000-02-22','a@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53',1,'2026-09-29 17:31:08'),(22,'Teste','Usuário 5','2009-09-22','testeusuario5@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53',1,'2026-09-29 18:52:46'),(23,'Eduardo','Pedro','1998-08-08','eduardo@eduardomail.com','e65099a3a50fade4991ccbec6a807b68f08d193e67950bcfd410e6bcdd931376',1,'2026-09-29 21:39:37'),(24,'carlos','Souza','2026-09-22','fabricioolimpio734@carlos.com','1f3ce40415a2081fa3eee75fc39fff8e56c22270d1a978a7249b592dcebd20b4',1,'2026-10-01 20:19:26');
+INSERT INTO `tbl_usuario` VALUES (1,'Administrador','','2026-01-01','admin@admin','7706b7a1acdf3e628591ca1a76db7001347f4b593e0ab1490cb3301d629dfd1d','2026-09-28 22:09:19',2),(2,'Rayssa','Silva','2026-01-01','lemesxd05@gmail.com','534c053bee9bb472fd9980eec46c11fa6ff01619ca867ff406ad966c2f45345a','2026-09-28 22:09:19',1),(3,'Bruno','Azevedo','2026-01-01','bruno.teste@email.com','b68cacbadaee450b8a8ce2dd44842f1de03ee9993ad97b5e99dea64ef93960ba','2026-09-28 22:09:19',1),(4,'Fabricio','Henrique','2026-01-01','fabricioteste2@gmail.com','acd0bf5b644718ded5db87aa3c554c587e27c61ef72560cde88266c51b76e65e','2026-09-28 22:09:19',1),(5,'Pedro','Emanoel','2026-01-01','pedroteste@gmail.com','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','2026-09-28 22:09:19',1),(6,'Fabricio','Henrique','2026-01-01','fabricioolimpio734@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53','2026-09-28 22:09:19',4),(7,'Teste','Usuario','2026-01-01','testeusuario@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53','2026-09-28 22:09:19',1),(8,'Fabricio','Henrique','2026-01-01','fabricioteste@gmail.com','c7b04530b1118f455f88fe5c6d3357f2edee635ebf27efcd71efe4cc5052d67e','2026-09-28 22:09:19',1),(9,'Luiz','Marins','2026-01-01','luizmarins033@gmaill.com','71ced60a700443544593e2ac4b314ca85e1979f2125861ff4d1680056687f1ff','2026-09-28 22:09:19',1),(10,'Luiz','Coutinho','2026-01-01','luizcoutinho@gmail.com','042b09e1fa67356fa0836ce06ada0ea143c03239e86f62f803e12063ff387c9f','2026-09-28 22:09:19',1),(15,'Gustavo','Rodrigues','1992-06-02','gustavortb@gmail.com','0a94ef45c0003a9a765076681bf895df98a954c935b36fd046625fa48d76a6ac','2026-09-28 22:09:19',1),(16,'Teste','Usuário','2009-09-22','testeusuario2@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53','2026-09-28 22:09:19',1),(19,'Bruno','Azevedo','2009-08-20','brunoazevedo1309@todosmail.com','e65099a3a50fade4991ccbec6a807b68f08d193e67950bcfd410e6bcdd931376','2026-09-28 22:09:19',1),(20,'Teste','Usuário3','2009-09-22','testeusuario3@gmail.com','2f2442394496f88ca50db70f53f6bc7a3b0f402a4f9680e30358128e215bf37b','2026-09-28 22:09:19',1),(21,'A','A','2000-02-22','a@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53','2026-09-29 17:31:08',1),(22,'Teste','Usuário 5','2009-09-22','testeusuario5@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53','2026-09-29 18:52:46',1),(23,'Eduardo','Pedro','1998-08-08','eduardo@eduardomail.com','e65099a3a50fade4991ccbec6a807b68f08d193e67950bcfd410e6bcdd931376','2026-09-29 21:39:37',1),(24,'carlos','Souza','2026-09-22','fabricioolimpio734@carlos.com','1f3ce40415a2081fa3eee75fc39fff8e56c22270d1a978a7249b592dcebd20b4','2026-10-01 20:19:26',1),(25,'Associação','Comercial de Cruzeiro','2009-01-11','associacaoccruzeiro@gmail.com','c0d0485589c18d67e63dd5dc3e27e7394c662b0517bf8c5c09772427caed8f53','2026-10-08 23:48:34',4),(26,'Luiz','Guilherme','2010-02-09','luizmarins033@gamil.com','042b09e1fa67356fa0836ce06ada0ea143c03239e86f62f803e12063ff387c9f','2026-10-09 20:03:55',1),(27,'Kkkkkkkkkk','Kkkkkk','1800-05-04','luiz.marins033@gmail.com','71ced60a700443544593e2ac4b314ca85e1979f2125861ff4d1680056687f1ff','2026-10-09 20:06:19',1);
 /*!40000 ALTER TABLE `tbl_usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `tbl_usuario_has_tbl_endereco`
+-- Table structure for table `tbl_usuario_tem_endereco`
 --
 
-DROP TABLE IF EXISTS `tbl_usuario_has_tbl_endereco`;
+DROP TABLE IF EXISTS `tbl_usuario_tem_endereco`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tbl_usuario_has_tbl_endereco` (
+CREATE TABLE `tbl_usuario_tem_endereco` (
   `id_usuario` smallint unsigned NOT NULL,
   `id_endereco` smallint unsigned NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -265,13 +314,42 @@ CREATE TABLE `tbl_usuario_has_tbl_endereco` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tbl_usuario_has_tbl_endereco`
+-- Dumping data for table `tbl_usuario_tem_endereco`
 --
 
-LOCK TABLES `tbl_usuario_has_tbl_endereco` WRITE;
-/*!40000 ALTER TABLE `tbl_usuario_has_tbl_endereco` DISABLE KEYS */;
-INSERT INTO `tbl_usuario_has_tbl_endereco` VALUES (15,3,'2026-09-28 22:08:17'),(16,4,'2026-09-28 22:08:17'),(19,5,'2026-09-28 22:08:17'),(21,7,'2026-09-29 17:31:09'),(22,8,'2026-09-29 18:52:46'),(23,9,'2026-09-29 21:39:37');
-/*!40000 ALTER TABLE `tbl_usuario_has_tbl_endereco` ENABLE KEYS */;
+LOCK TABLES `tbl_usuario_tem_endereco` WRITE;
+/*!40000 ALTER TABLE `tbl_usuario_tem_endereco` DISABLE KEYS */;
+INSERT INTO `tbl_usuario_tem_endereco` VALUES (6,3,'2026-10-09 18:07:57'),(15,3,'2026-09-28 22:08:17'),(16,4,'2026-09-28 22:08:17'),(19,5,'2026-09-28 22:08:17'),(21,7,'2026-09-29 17:31:09'),(22,8,'2026-09-29 18:52:46'),(23,9,'2026-09-29 21:39:37');
+/*!40000 ALTER TABLE `tbl_usuario_tem_endereco` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_usuario_tem_instituicao`
+--
+
+DROP TABLE IF EXISTS `tbl_usuario_tem_instituicao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_usuario_tem_instituicao` (
+  `id_usuario` smallint unsigned NOT NULL,
+  `id_instituicao` smallint unsigned NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_usuario`,`id_instituicao`),
+  KEY `fk_tbl_usuario_has_tbl_instituicao_tbl_instituicao1_idx` (`id_instituicao`),
+  KEY `fk_tbl_usuario_has_tbl_instituicao_tbl_usuario1_idx` (`id_usuario`),
+  CONSTRAINT `fk_tbl_usuario_has_tbl_instituicao_tbl_instituicao1` FOREIGN KEY (`id_instituicao`) REFERENCES `tbl_instituicao` (`id`),
+  CONSTRAINT `fk_tbl_usuario_has_tbl_instituicao_tbl_usuario1` FOREIGN KEY (`id_usuario`) REFERENCES `tbl_usuario` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_usuario_tem_instituicao`
+--
+
+LOCK TABLES `tbl_usuario_tem_instituicao` WRITE;
+/*!40000 ALTER TABLE `tbl_usuario_tem_instituicao` DISABLE KEYS */;
+INSERT INTO `tbl_usuario_tem_instituicao` VALUES (6,1,'2026-10-09 18:46:18');
+/*!40000 ALTER TABLE `tbl_usuario_tem_instituicao` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -284,9 +362,17 @@ DROP TABLE IF EXISTS `tbl_vaga`;
 CREATE TABLE `tbl_vaga` (
   `id` smallint unsigned NOT NULL AUTO_INCREMENT,
   `titulo` varchar(75) NOT NULL,
+  `resumo` varchar(200) NOT NULL DEFAULT 'Aqui ficará o resumo do cargo da vaga.',
   `descricao` text NOT NULL,
+  `ativo` tinyint NOT NULL DEFAULT '1',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `id_instituicao` smallint unsigned NOT NULL,
+  `id_modelo_vaga` tinyint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tbl_vaga_tbl_instituicao1_idx` (`id_instituicao`),
+  KEY `fk_tbl_vaga_tbl_modelo_vaga1_idx` (`id_modelo_vaga`),
+  CONSTRAINT `fk_tbl_vaga_tbl_instituicao1` FOREIGN KEY (`id_instituicao`) REFERENCES `tbl_instituicao` (`id`),
+  CONSTRAINT `fk_tbl_vaga_tbl_modelo_vaga1` FOREIGN KEY (`id_modelo_vaga`) REFERENCES `tbl_modelo_vaga` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -296,7 +382,7 @@ CREATE TABLE `tbl_vaga` (
 
 LOCK TABLES `tbl_vaga` WRITE;
 /*!40000 ALTER TABLE `tbl_vaga` DISABLE KEYS */;
-INSERT INTO `tbl_vaga` VALUES (1,'Analista de Marketing Digital','Responsável pelo planejamento e execução de campanhas digitais, análise de métricas, otimização de conversões e estratégias de posicionamento de marca nas redes sociais.','2026-09-28 22:08:53'),(2,'Desenvolvedor(a) Front-End Pleno','Atuar no desenvolvimento e manutenção de aplicações web de alta performance, colaborando com a equipe de UX/UI para entregar a melhor experiência ao usuário.','2026-09-28 22:08:53'),(3,'Gerente de Contabilidade','Liderar a equipe contábil, garantir a conformidade das obrigações acessórias, coordenar auditorias internas e externas e assessorar a diretoria em decisões estratégicas.','2026-09-28 22:08:53'),(4,'Assistente de Recursos Humanos','Apoiar os processos de atração e seleção, conduzir integrações de novos colaboradores, auxiliar no controle de ponto, benefícios e comunicação interna.','2026-09-28 22:08:53'),(5,'Executivo(a) de Contas B2B','Identificar novas oportunidades de negócios no mercado, conduzir reuniões de apresentação de soluções, negociar contratos e gerenciar o pipeline de vendas.','2026-09-28 22:08:53'),(6,'Analista de Suporte Técnico N2','Prestar atendimento de suporte técnico aos colaboradores, gerenciar chamados em sistema de tickets, realizar manutenção preventiva e corretiva de equipamentos.','2026-09-28 22:08:53'),(7,'Coordenador(a) de Logística','Supervisionar o recebimento, armazenagem e expedição de mercadorias, otimizar rotas de entrega, controlar indicadores de desempenho (KPIs) e gerenciar custos logísticos.','2026-09-28 22:08:53'),(8,'Designer Gráfico Pleno','Criar identidades visuais, desenvolver peças gráficas para campanhas online e offline, e garantir a consistência visual da marca em todos os pontos de contato.','2026-09-28 22:08:53'),(9,'Analista de Customer Success','Apoiar a jornada do cliente desde o onboarding, garantir o uso ativo da plataforma, identificar oportunidades de renovação/upsell e minimizar o churn (cancelamentos).','2026-09-28 22:08:53'),(10,'Engenheiro(a) de Dados Sênior','Construir e otimizar pipelines de dados eficientes, garantir a qualidade e a governança dos dados da empresa e apoiar o time de cientistas e analistas de dados.','2026-09-28 22:08:53');
+INSERT INTO `tbl_vaga` VALUES (1,'Analista de Marketing Digital','Responsável pelo planejamento e execução de campanhas digitais, análise de métricas, otimização de conversões e estratégias de posicionamento de marca nas redes sociais.','',1,'2026-09-28 22:08:53',2,1),(2,'Desenvolvedor(a) Front-End Pleno','Atuar no desenvolvimento e manutenção de aplicações web de alta performance, colaborando com a equipe de UX/UI para entregar a melhor experiência ao usuário.','',1,'2026-09-28 22:08:53',1,2),(3,'Gerente de Contabilidade','Liderar a equipe contábil, garantir a conformidade das obrigações acessórias, coordenar auditorias internas e externas e assessorar a diretoria em decisões estratégicas.','',1,'2026-09-28 22:08:53',1,1),(4,'Assistente de Recursos Humanos','Apoiar os processos de atração e seleção, conduzir integrações de novos colaboradores, auxiliar no controle de ponto, benefícios e comunicação interna.','',1,'2026-09-28 22:08:53',1,1),(5,'Executivo(a) de Contas B2B','Identificar novas oportunidades de negócios no mercado, conduzir reuniões de apresentação de soluções, negociar contratos e gerenciar o pipeline de vendas.','',1,'2026-09-28 22:08:53',1,1),(6,'Analista de Suporte Técnico N2','Prestar atendimento de suporte técnico aos colaboradores, gerenciar chamados em sistema de tickets, realizar manutenção preventiva e corretiva de equipamentos.','',1,'2026-09-28 22:08:53',1,1),(7,'Coordenador(a) de Logística','Supervisionar o recebimento, armazenagem e expedição de mercadorias, otimizar rotas de entrega, controlar indicadores de desempenho (KPIs) e gerenciar custos logísticos.','',1,'2026-09-28 22:08:53',1,1),(8,'Designer Gráfico Pleno','Criar identidades visuais, desenvolver peças gráficas para campanhas online e offline, e garantir a consistência visual da marca em todos os pontos de contato.','',1,'2026-09-28 22:08:53',1,1),(9,'Analista de Customer Success','Apoiar a jornada do cliente desde o onboarding, garantir o uso ativo da plataforma, identificar oportunidades de renovação/upsell e minimizar o churn (cancelamentos).','',1,'2026-09-28 22:09:00',1,1),(10,'Engenheiro(a) de Dados Sênior','Construir e otimizar pipelines de dados eficientes, garantir a qualidade e a governança dos dados da empresa e apoiar o time de cientistas e analistas de dados.','',1,'2026-09-28 22:08:53',1,1);
 /*!40000 ALTER TABLE `tbl_vaga` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -309,4 +395,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-05 16:35:34
+-- Dump completed on 2026-10-09 19:01:57
