@@ -232,7 +232,7 @@ $conn->close();
             <p class="mt-3 text-text-secondary">Oportunidades atualizadas diariamente para o seu perfil.</p>
         </div>
 
-        <div class="mt-8 rounded-2xl border border-border bg-white p-4 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+        <div class="mt-8 rounded-2xl border border-border bg-white p-4 shadow-sm">
             <div class="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
                 <div>
                     <label for="busca-vaga" class="mb-2 block text-sm font-medium">Buscar vaga</label>
