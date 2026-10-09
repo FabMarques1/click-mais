@@ -36,7 +36,7 @@ if ($erro === '') {
             $query = "SELECT e.cep, e.logradouro,
                              COALESCE(e.complemento, 'Sem complemento') AS complemento,
                              e.bairro, e.numero, c.nome AS cidade, es.sigla AS estado
-                      FROM tbl_usuario_has_tbl_endereco ue
+                      FROM tbl_usuario_tem_endereco ue
                       INNER JOIN tbl_endereco e ON ue.id_endereco = e.id
                       INNER JOIN tbl_cidade c ON e.id_cidade = c.id
                       INNER JOIN tbl_estado es ON c.id_estado = es.id

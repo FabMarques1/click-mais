@@ -10,7 +10,7 @@ $erro = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-$nome            = is_string($_POST['nome'] ?? null) ? strtolower(ucfirst(trim($_POST['nome']))) : '';
+$nome            = is_string($_POST['nome'] ?? null) ? ucfirst(trim($_POST['nome'])) : '';
 $sobrenome       = is_string($_POST['sobrenome'] ?? null) ? ucfirst(trim($_POST['sobrenome'])) : '';
 $data_nascimento = is_string($_POST['data_nascimento'] ?? null) ? $_POST['data_nascimento'] : '';
 $email           = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';

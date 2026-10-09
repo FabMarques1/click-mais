@@ -21,6 +21,14 @@ if ($logado) {
     $cepFormatado = strlen($cep) === 8 ? substr($cep, 0, 5) . '-' . substr($cep, 5) : $cep;
     $endereco = implode(', ', array_filter([$logradouro, $numero, $complemento, $bairro, $cidadeEstado, $cepFormatado]));
 }
+
+$query = "SELECT titulo, descricao, created_at FROM tbl_vaga
+          ORDER BY created_at DESC
+          LIMIT 6";
+$stmt = $conn->prepare($query);
+$stmt->execute();
+$vagas = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -232,7 +240,9 @@ if ($logado) {
         <!-- Cards (substituir pelo loop do banco de dados) -->
         <div id="lista-vagas" class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 
-            <?php /* foreach ($vagas as $vaga): */ ?>
+            <!-- 6 PRIMEIRAS VAGAS -->
+
+            <?php foreach ($vagas as $vaga): ?>
             <article data-modalidade="Híbrido" class="vaga flex flex-col rounded-2xl border border-border bg-white p-6 shadow-sm transition hover:border-primary/40 hover:shadow-md">
 
                 <div class="flex items-start justify-between">
@@ -240,7 +250,7 @@ if ($logado) {
                     <span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Híbrido</span>
                 </div>
 
-                <h3 class="mt-5 text-lg font-bold">Analista de Marketing Digital</h3>
+                <h3 class="mt-5 text-lg font-bold"><?php echo htmlspecialchars($vaga['titulo']); ?></h3>
 
                 <div class="mt-2 space-y-1 text-sm text-text-secondary">
                     <p class="font-medium">Agência Criativa</p>
@@ -267,7 +277,7 @@ if ($logado) {
                     <a href="#" class="text-sm font-semibold text-primary transition hover:text-primary-dark">Ver vaga</a>
                 </div>
             </article>
-            <?php /* endforeach; */ ?>
+            <?php endforeach; ?>
 
         </div>
     </div>
