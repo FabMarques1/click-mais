@@ -40,7 +40,12 @@
 
         const url = link.getAttribute("href");
 
-        if (!url || /^(#|javascript:|mailto:|tel:)/i.test(url)) {
+        // Ignora âncoras, links vazios e protocolos especiais.
+        if (
+            !url ||
+            url.startsWith("#") ||
+            /^(javascript:|mailto:|tel:)/i.test(url)
+        ) {
             return;
         }
 
@@ -52,15 +57,23 @@
             return;
         }
 
-        // Só ativa a transição para páginas PHP do mesmo site.
+        // Somente páginas PHP do mesmo site.
         if (
             destino.origin !== window.location.origin ||
-            !/\.php$/i.test(destino.pathname) ||
-            destino.href === window.location.href ||
-            navegando
+            !/\.php$/i.test(destino.pathname)
         ) {
             return;
         }
+
+        // Ignora links para a mesma página.
+        if (
+            destino.pathname === window.location.pathname &&
+            destino.search === window.location.search
+        ) {
+            return;
+        }
+
+        if (navegando) return;
 
         event.preventDefault();
         navegando = true;
@@ -70,9 +83,5 @@
         setTimeout(() => {
             window.location.assign(destino.href);
         }, tempoTransicao);
-    });
-
-    window.addEventListener("popstate", () => {
-        mostrarLoader();
     });
 })();
