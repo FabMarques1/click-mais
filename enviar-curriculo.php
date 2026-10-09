@@ -7,17 +7,16 @@ require_once("config/database.php");
 $idUsuario = $_SESSION['id'];
 $resumoProfissional = $_POST['resumoProfissional'];
 $curriculo = $_FILES['curriculo'];
-$idVaga = $_POST['vaga'];
 
-$query = "SELECT id_usuario, id_vaga FROM tbl_curriculo WHERE id_usuario = ? AND id_vaga = ?";
+$query = "SELECT id_usuario FROM tbl_curriculo WHERE id_usuario = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ii", $idUsuario, $idVaga);
+$stmt->bind_param("i", $idUsuario);
 $stmt->execute();
 
 $result = $stmt->get_result();
 
 if($result->num_rows > 0) {
-    redirecionarComErro("Você já enviou currículo para essa vaga!", 'form.php');
+    redirecionarComErro("Você já tem um currículo, vá para as configurações para modificá-lo.", 'form.php');
 }
 
 $stmt->close();
@@ -38,9 +37,6 @@ try{
 
         $tamanhoMax = 2 * 1024 * 1024;
 
-        // Cada extensão aceita uma lista de mimes: o .docx, por baixo,
-        // é um .zip, e em alguns servidores o fileinfo identifica ele
-        // como application/zip em vez do mime "oficial" do Office.
         $mimesPermitidos = [
             'pdf'  => ['application/pdf'],
             'doc'  => ['application/msword'],
@@ -69,10 +65,10 @@ try{
 
         if (move_uploaded_file($caminhoTemp, $caminhoFinal)) {
             
-            $sql = "INSERT INTO tbl_curriculo (resumo_profissional, curriculo, id_usuario, id_vaga) VALUES
-                    (?, ?, ?, ?)";
+            $sql = "INSERT INTO tbl_curriculo (resumo_profissional, curriculo, id_usuario) VALUES
+                    (?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssii", $resumoProfissional, $caminhoFinal, $idUsuario, $idVaga);
+            $stmt->bind_param("ssi", $resumoProfissional, $caminhoFinal, $idUsuario);
 
             if ($stmt->execute()) {
                 header("Location: index.php");
@@ -90,7 +86,7 @@ try{
         redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'form.php');
     }
 } catch (Exception $e) {
-    echo "Erro ao enviar currículo, contate o suporte.";
+    echo "Erro ao enviar currículo, contate o suporte." . $e->getMessage();
 }
 
 $conn->close();
