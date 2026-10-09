@@ -189,7 +189,7 @@ $conn->close();
             <a href="#vagas" class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-white transition hover:bg-primary-dark">
                 Encontrar vagas
             </a>
-            <a href="form.php" class="inline-flex items-center justify-center rounded-xl border border-border bg-white px-6 py-3.5 font-semibold transition hover:border-primary hover:text-primary">
+            <a href="formulario.php" class="inline-flex items-center justify-center rounded-xl border border-border bg-white px-6 py-3.5 font-semibold transition hover:border-primary hover:text-primary">
                 Enviar meu currículo
             </a>
         </div>

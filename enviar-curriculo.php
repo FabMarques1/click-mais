@@ -16,7 +16,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if($result->num_rows > 0) {
-    redirecionarComErro("Você já tem um currículo, vá para as configurações para modificá-lo.", 'form.php');
+    redirecionarComErro("Você já tem um currículo, vá para as configurações para modificá-lo.", 'formulario.php');
 }
 
 $stmt->close();
@@ -47,16 +47,16 @@ try{
         ];
 
         if (!array_key_exists($extensao, $mimesPermitidos)) {
-            redirecionarComErro("Tipo de arquivo inválido.", 'form.php');
+            redirecionarComErro("Tipo de arquivo inválido.", 'formulario.php');
         }
 
         $tipoMime = mime_content_type($caminhoTemp);
         if (!in_array($tipoMime, $mimesPermitidos[$extensao], true)) {
-            redirecionarComErro("Tipo de arquivo inválido.", 'form.php');
+            redirecionarComErro("Tipo de arquivo inválido.", 'formulario.php');
         }
 
         if ($tamanho > $tamanhoMax) {
-            redirecionarComErro("Tamanho de arquivo excedido, permitido apenas 2MB.", 'form.php');
+            redirecionarComErro("Tamanho de arquivo excedido, permitido apenas 2MB.", 'formulario.php');
         }
 
         $hash16       = bin2hex(random_bytes(8));
@@ -73,17 +73,17 @@ try{
             if ($stmt->execute()) {
                 header("Location: index.php");
             } else {
-                redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'form.php');
+                redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'formulario.php');
             }
 
             $stmt->close();
 
         } else {
-            redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'form.php');
+            redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'formulario.php');
         }
 
     } else {
-        redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'form.php');
+        redirecionarComErro("Erro ao enviar currículo, contate o suporte.", 'formulario.php');
     }
 } catch (Exception $e) {
     echo "Erro ao enviar currículo, contate o suporte." . $e->getMessage();
