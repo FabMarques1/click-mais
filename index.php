@@ -255,7 +255,7 @@ $conn->close();
         <!-- Filtros por modalidade -->
         <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
             <div class="flex flex-wrap gap-2" id="filtros">
-                <button type="button" data-filtro="todas" class="filtro rounded-full border border-primary bg-primary px-4 py-1.5 text-sm font-medium text-white transition">Todas</button>
+                <button type="button" data-filtro="todas" class="filtro rounded-full border border-primary bg-primary px-4 py-1.5 text-sm font-medium text-white transition hover:border-primary hover:text-primary">Todas</button>
                 <button type="button" data-filtro="Remoto" class="filtro rounded-full border border-border bg-white px-4 py-1.5 text-sm font-medium text-text-secondary transition hover:border-primary hover:text-primary">Remoto</button>
                 <button type="button" data-filtro="Híbrido" class="filtro rounded-full border border-border bg-white px-4 py-1.5 text-sm font-medium text-text-secondary transition hover:border-primary hover:text-primary">Híbrido</button>
                 <button type="button" data-filtro="Presencial" class="filtro rounded-full border border-border bg-white px-4 py-1.5 text-sm font-medium text-text-secondary transition hover:border-primary hover:text-primary">Presencial</button>
