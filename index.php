@@ -81,7 +81,7 @@ $conn->close();
 
         <nav class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 md:flex">
             <a href="#inicio" class="text-sm font-medium text-text-secondary transition-all duration-300 hover:-translate-y-0.5 hover:text-primary hover:drop-shadow-[0_0_8px_var(--color-primary)]">Início</a>
-            <a href="#vagas" class="text-sm font-medium text-text-secondary transition-all duration-300 hover:-translate-y-0.5 hover:text-primary hover:drop-shadow-[0_0_8px_var(--color-primary)]">Vagas</a>
+            <a href="vagas.php?" class="text-sm font-medium text-text-secondary transition-all duration-300 hover:-translate-y-0.5 hover:text-primary hover:drop-shadow-[0_0_8px_var(--color-primary)]">Vagas</a>
             <a href="#como-funciona" class="text-sm font-medium text-text-secondary transition-all duration-300 hover:-translate-y-0.5 hover:text-primary hover:drop-shadow-[0_0_8px_var(--color-primary)]">Como funciona</a>
         </nav>
 
@@ -133,7 +133,7 @@ $conn->close();
     <div id="menu-mobile" class="hidden border-t border-border bg-white px-6 py-4 md:hidden">
         <div class="flex flex-col gap-3 text-sm font-medium text-text-secondary">
             <a href="#inicio" class="transition-all duration-300 hover:translate-x-1 hover:text-primary">Início</a>
-            <a href="#vagas" class="transition-all duration-300 hover:translate-x-1 hover:text-primary">Vagas</a>
+            <a href="vagas.php" class="transition-all duration-300 hover:translate-x-1 hover:text-primary">Vagas</a>
             <a href="#como-funciona" class="transition-all duration-300 hover:translate-x-1 hover:text-primary">Como funciona</a>
 
             <?php if ($logado): ?>
@@ -195,7 +195,7 @@ $conn->close();
         </p>
 
         <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <a href="#vagas" class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-white shadow-md shadow-primary/20 transition-all duration-300 hover:-translate-y-1 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/30 active:translate-y-0">
+            <a href="vagas.php" class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-white shadow-md shadow-primary/20 transition-all duration-300 hover:-translate-y-1 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/30 active:translate-y-0">
                 Encontrar vagas
             </a>
 
@@ -228,36 +228,37 @@ $conn->close();
     <div class="mx-auto max-w-6xl px-6">
 
         <div class="max-w-2xl">
-            <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Vagas disponíveis</h2>
+            <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Vagas mais recentes</h2>
             <p class="mt-3 text-text-secondary">Oportunidades atualizadas diariamente para o seu perfil.</p>
         </div>
 
-        <div class="mt-8 rounded-2xl border border-border bg-white p-4 shadow-sm">
-            <div class="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
-                <div>
-                    <label for="busca-vaga" class="mb-2 block text-sm font-medium">Buscar vaga</label>
-                    <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 4.5a7.5 7.5 0 006.15 12.15z" />
-                        </svg>
-                        <input id="busca-vaga" type="text" placeholder="Cargo ou palavra-chave" class="w-full rounded-xl border border-border py-3 pl-10 pr-4 text-sm outline-none transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary/20">
+        <form action="vagas.php" method="GET">
+            <div class="mt-8 rounded-2xl border border-border bg-white p-4 shadow-sm">
+                <div class="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
+                    <div>
+                        <label for="busca-vaga" class="mb-2 block text-sm font-medium">Buscar vaga</label>
+                        <div class="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 4.5a7.5 7.5 0 006.15 12.15z" />
+                            </svg>
+                            <input name="search" id="busca-vaga" type="text" placeholder="Cargo ou palavra-chave" class="w-full rounded-xl border border-border py-3 pl-10 pr-4 text-sm outline-none transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary/20">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="busca-local" class="mb-2 block text-sm font-medium">Localização</label>
+                        <input name="local" id="busca-local" type="text" placeholder="Cidade ou região" class="w-full rounded-xl border border-border px-4 py-3 text-sm outline-none transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary/20">
+                    </div>
+
+                    <div class="flex items-end">
+                        <?php if (!$logado): ?>
+                            <a href="login.php" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-8 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 active:translate-y-0">Buscar</a>
+                        <?php else: ?>
+                            <button type="submit" class="w-full rounded-xl bg-primary px-8 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 active:translate-y-0">Buscar</button>
+                        <?php endif; ?>
                     </div>
                 </div>
-
-                <div>
-                    <label for="busca-local" class="mb-2 block text-sm font-medium">Localização</label>
-                    <input id="busca-local" type="text" placeholder="Cidade ou região" class="w-full rounded-xl border border-border px-4 py-3 text-sm outline-none transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary/20">
-                </div>
-
-                <div class="flex items-end">
-                    <?php if (!$logado): ?>
-                        <a href="login.php" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-8 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 active:translate-y-0">Buscar</a>
-                    <?php else: ?>
-                        <button type="button" class="w-full rounded-xl bg-primary px-8 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 active:translate-y-0">Buscar</button>
-                    <?php endif; ?>
-                </div>
             </div>
-        </div>
 
         <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
             <div class="flex flex-wrap gap-2" id="filtros">
@@ -356,7 +357,7 @@ $conn->close();
             </div>
 
             <nav class="flex flex-wrap gap-6 text-sm text-text-secondary">
-                <a href="#vagas" class="transition-all duration-300 hover:-translate-y-0.5 hover:text-primary">Vagas</a>
+                <a href="vagas.php?" class="transition-all duration-300 hover:-translate-y-0.5 hover:text-primary">Vagas</a>
                 <a href="#como-funciona" class="transition-all duration-300 hover:-translate-y-0.5 hover:text-primary">Como funciona</a>
                 <a href="#" class="transition-all duration-300 hover:text-primary">Privacidade</a>
                 <a href="#" class="transition-all duration-300 hover:text-primary">Contato</a>
